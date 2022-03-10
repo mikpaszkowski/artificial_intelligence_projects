@@ -10,8 +10,6 @@ def main():
 
     startingPointType = getStartingPointType()
 
-    # tutaj w chuj powtórzeń kodu ale tak zostawiłem aby było wiadomo jakie przypadki rozpatrujemy
-
     if method == 'Gradient Descent':
         if functionType == 'F(x)':
             scalarCoeff = getScalarFunctionCoeff()
@@ -20,7 +18,7 @@ def main():
 
             if startingPointType == StartingPointType.MANUAL:
                 startingPoint = getStartingPointValue()
-                gradientDescent(scalarCoeff, startingPoint, conditions)
+                gradientDescent(method, scalarCoeff, startingPoint, conditions)
 
             elif startingPointType == StartingPointType.RANDOM:
                 uniformDistributionRange = getRangeOfUniformDistribution()
