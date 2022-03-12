@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec710e1a-22ef-4bef-82d0-9188dff5d6b1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/DistributionRange.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Minimalization.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RestartMode.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StopConditions.py" beforeDir="false" afterPath="$PROJECT_DIR$/StopConditions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmdQuestions.py" beforeDir="false" afterPath="$PROJECT_DIR$/cmdQuestions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradient_descent.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
