@@ -1,8 +1,9 @@
 from __future__ import print_function, unicode_literals
 
+from Minimalization import Minimalization
 from cmdQuestions import getMethodAndFunctionType, getStartingPointType, getScalarFunctionCoeff, getStoppingConditions, \
-    getNumOfRestartMode, getStartingPointValue, getRangeOfUniformDistribution, getVectorFunctionCoeff, StartingPointType
-from gradient_descent import gradientDescent, gradientDescentRandom
+    getNumOfRestartMode, getStartingPointValue, getRangeOfUniformDistribution, getVectorFunctionCoeff, \
+    StartingPointType, MethodType, FunctionType
 
 
 def main():
@@ -10,56 +11,31 @@ def main():
 
     startingPointType = getStartingPointType()
 
-    if method == 'Gradient Descent':
-        if functionType == 'F(x)':
-            scalarCoeff = getScalarFunctionCoeff()
-            conditions = getStoppingConditions()
-            numOfRestarts = getNumOfRestartMode()
+    if functionType == FunctionType.SCALAR:
+        scalarCoeff = getScalarFunctionCoeff()
+        conditions = getStoppingConditions()
+        restartMode = getNumOfRestartMode()
 
-            if startingPointType == StartingPointType.MANUAL:
-                startingPoint = getStartingPointValue()
-                gradientDescent(method, scalarCoeff, startingPoint, conditions)
+        if startingPointType == StartingPointType.MANUAL:
+            startingPoint = getStartingPointValue()
+            Minimalization.gradientDescent_F(method, scalarCoeff, startingPoint, conditions)
 
-            elif startingPointType == StartingPointType.RANDOM:
-                uniformDistributionRange = getRangeOfUniformDistribution()
-                gradientDescentRandom(uniformDistributionRange, scalarCoeff, conditions)
+        elif startingPointType == StartingPointType.RANDOM:
+            uniformDistributionRange = getRangeOfUniformDistribution()
+            Minimalization.gradientDescentRandom(functionType, method, uniformDistributionRange, scalarCoeff,
+                                                 conditions)
 
-        elif functionType == 'G(x)':
-            vectorCoeff = getVectorFunctionCoeff()
-            conditions = getStoppingConditions()
-            numOfRestarts = getNumOfRestartMode()
-            if startingPointType == 'Defined Manually':
-                startingPoint = getStartingPointValue()
-                gradientDescent(scalarCoeff, startingPoint, conditions)
-            elif startingPointType == 'Randomly generated':
-                uniformDistributionRange = getRangeOfUniformDistribution()
-                gradientDescentRandom(uniformDistributionRange, scalarCoeff, conditions)
-    elif method == 'Newton':
-        if functionType == 'F(x)':
-            scalarCoeff = getScalarFunctionCoeff()
-            conditions = getStoppingConditions()
-            numOfRestarts = getNumOfRestartMode()
-
-            if startingPointType == StartingPointType.MANUAL:
-
-                startingPoint = getStartingPointValue()
-                gradientDescent(scalarCoeff, startingPoint, conditions)
-
-            elif startingPointType == StartingPointType.RANDOM:
-
-                uniformDistributionRange = getRangeOfUniformDistribution()
-                gradientDescentRandom(uniformDistributionRange, scalarCoeff, conditions)
-
-        elif functionType == 'G(x)':
-            vectorCoeff = getVectorFunctionCoeff()
-            # conditions = getStoppingConditions()
-            # numOfRestarts = getNumOfRestartMode()
-            # if startingPointType == 'Defined Manually':
-            #     startingPoint = getStartingPointValue()
-            #     gradientDescent(scalarCoeff, startingPoint, conditions)
-            # elif startingPointType == 'Randomly generated':
-            #     uniformDistributionRange = getRangeOfUniformDistribution()
-            #     gradientDescentRandom(uniformDistributionRange, scalarCoeff, conditions)
+    elif functionType == FunctionType.VECTOR:
+        vectorCoeff = getVectorFunctionCoeff()
+        conditions = getStoppingConditions()
+        numOfRestarts = getNumOfRestartMode()
+        if startingPointType == StartingPointType.MANUAL:
+            startingPoint = getStartingPointValue()
+            Minimalization.gradientDescent_G(method, vectorCoeff, startingPoint, conditions)
+        elif startingPointType == StartingPointType.RANDOM:
+            uniformDistributionRange = getRangeOfUniformDistribution()
+            Minimalization.gradientDescentRandom(functionType, method, uniformDistributionRange, vectorCoeff,
+                                                 conditions)
 
 
 if __name__ == '__main__':
