@@ -4,7 +4,7 @@ from Minimalization import Minimalization
 from cmdQuestions import getMethodAndFunctionType, getStartingPointType, getScalarFunctionCoeff, getStoppingConditions, \
     getNumOfRestartMode, getStartingPointValue, getRangeOfUniformDistribution, getVectorFunctionCoeff, \
     StartingPointType, MethodType, FunctionType
-
+import numpy
 
 def main():
     method, functionType = getMethodAndFunctionType()
@@ -17,7 +17,7 @@ def main():
         restartMode = getNumOfRestartMode()
 
         if startingPointType == StartingPointType.MANUAL:
-            startingPoint = getStartingPointValue()
+            startingPoint = getStartingPointValue(functionType)
             Minimalization.gradientDescent_F(method, scalarCoeff, startingPoint, conditions)
 
         elif startingPointType == StartingPointType.RANDOM:
@@ -30,7 +30,9 @@ def main():
         conditions = getStoppingConditions()
         numOfRestarts = getNumOfRestartMode()
         if startingPointType == StartingPointType.MANUAL:
-            startingPoint = getStartingPointValue()
+            startingPoint = getStartingPointValue(functionType)
+            l = numpy.dot(numpy.transpose(startingPoint), numpy.dot(vectorCoeff.A, startingPoint))
+            print(numpy.dot(numpy.transpose(startingPoint), numpy.dot(vectorCoeff.A, startingPoint)))
             Minimalization.gradientDescent_G(method, vectorCoeff, startingPoint, conditions)
         elif startingPointType == StartingPointType.RANDOM:
             uniformDistributionRange = getRangeOfUniformDistribution()

@@ -101,7 +101,7 @@ def getVectorFunctionCoeff():
             'type': 'input',
             'name': 'b',
             'default': '1; 1',
-            'message': 'Please enter the values of d-dimensional vector \'c\' coefficient separated by \',\' (row), \';\' (column)',
+            'message': 'Please enter the values of d-dimensional vector \'b\' coefficient separated by \',\' (row), \';\' (column)',
 
         },
         {
@@ -153,15 +153,18 @@ def getScalarFunctionCoeff():
     return ScalarFunCoeff(float(answers['a']), float(answers['d']), float(answers['c']), float(answers['d']))
 
 
-def getStartingPointValue():
+def getStartingPointValue(functionType):
     answer = prompt({
         'type': 'input',
         'name': 'startingPoint',
-        'message': 'Please enter the starting point',
+        'message': 'Please enter the starting point' if functionType == FunctionType.SCALAR else 'Please enter vector of starting points',
         'default': '1',
         # 'validate': CoefficientValidator
     })
-    return float(answer['startingPoint'])
+    if functionType == FunctionType.SCALAR:
+        return float(answer['startingPoint'])
+    elif functionType == FunctionType.VECTOR:
+        return numpy.matrix(answer['startingPoint'])
 
 
 def getRangeOfUniformDistribution():

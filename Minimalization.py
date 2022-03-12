@@ -1,8 +1,6 @@
+import numpy
 import random
 import time
-
-import numpy
-
 from cmdQuestions import StoppingConditionType, MethodType, FunctionType
 
 
@@ -17,9 +15,9 @@ class Minimalization:
             currNumOfIterations = currNumOfIterations + 1
             print(x)
             if method == "Gradient Descent":  # gradient descent
-                diff = learnRate * (3 * coeff.a * x ** 2 + 2 * coeff.b * x + coeff.c)
+                diff = learnRate * (function_F_derivative(coeff, x))
             else:  # newton's formula
-                diff = learnRate * (3 * coeff.a * x ** 2 + 2 * coeff.b * x + coeff.c) / (
+                diff = learnRate * (function_F_derivative(coeff, x)) / (
                         6 * coeff.a * x + 2 * coeff.b)  # learnRate*(a*x**3+b*x**2+c*x+d)/(3*a*x**2+2*b*x+c)
             if stopConditions.type == StoppingConditionType.TIMEOUT and time.time() - startTime >= stopConditions.value:
                 print("b")
@@ -31,8 +29,13 @@ class Minimalization:
             if stopConditions.type == StoppingConditionType.ITERATIONS and currNumOfIterations == stopConditions.value:
                 print('d')
                 break
-        print(x)
-        return x, coeff.a * x ** 3 + coeff.b * x ** 2 + coeff.c * x + coeff.d
+        return x, function_F(coeff, x)
+
+    def function_F_derivative(coeff, x):
+        return 3 * coeff.a * x ** 2 + 2 * coeff.b * x + coeff.c
+
+    def function_F(coeff, x):
+        return coeff.a * x ** 3 + coeff.b * x ** 2 + coeff.c * x + coeff.d
 
     @staticmethod
     def gradientDescent_G(method, coeff, startValue, stopConditions, learnRate=0.001):
@@ -41,35 +44,33 @@ class Minimalization:
         currIteration = 0
         while True:
             if method == MethodType.GRADIENT_DESCENT:  # gradient descent
-                diff = learnRate * (numpy.dot(2, numpy.dot(coeff.A, x)) + coeff.b)
+                diff = learnRate * (gradient_G(coeff, x))
             elif method == MethodType.NEWTON:  # newton's formula
-                diff = learnRate * numpy.divide(
-                    numpy.dot(numpy.transpose(x), numpy.dot(coeff.A, x)) + numpy.dot(numpy.transpose(coeff.b),
-                                                                                     x) + coeff.c,
-                    numpy.dot(2, numpy.dot(coeff.A, x)) + coeff.b)
+                diff = learnRate * numpy.divide(function_G(coeff, x), derivative_g(coeff, x))
             else:
                 raise "TypeError"
             if stopConditions.type == StoppingConditionType.TIMEOUT and time.time() - startTime >= stopConditions.value:
                 print("time out")
                 break
             x = x - diff
-            if stopConditions.type == StoppingConditionType.DESIRED_VALUE and numpy.dot(numpy.transpose(x), numpy.dot(coeff.A, x)) + numpy.dot(numpy.transpose(coeff.b),
-                                                                                   x) + coeff.c <= stopConditions.value:
+            if stopConditions.type == StoppingConditionType.DESIRED_VALUE and function_G(coeff, x).item(0) <= stopConditions.value:
                 print("desired x")
                 break
             if stopConditions.type == StoppingConditionType.ITERATIONS and currIteration == stopConditions.value - 1:
                 print('d')
                 break
             currIteration = currIteration + 1
-        print(x)
-        print(currIteration)
-        return x, numpy.dot(numpy.transpose(x), numpy.dot(coeff.A, x)) + numpy.dot(numpy.transpose(coeff.b),
-                                                                                   x) + coeff.c
+        return x, d.item(0)
+
+    def gradient_G(coeff, x):
+        return numpy.dot(2, numpy.dot(coeff.A, x)) + coeff.b
+
+    def derivative_g(coeff, x):
+        return numpy.dot(numpy.transpose(x), numpy.dot(coeff.A, x)) + numpy.dot(numpy.transpose(coeff.b),
+                                                                                x) + coeff.c
 
     @staticmethod
     def gradientDescentRandom(functionType, method, uniformDistributionRange, coeff, stopConditions, learnRate=0.2):
-        # tutaj poprawić generowanie wektora albo pojedyńczej wartości
-
         if functionType == FunctionType.SCALAR:
             x = random.randint(uniformDistributionRange.low, uniformDistributionRange.high)
             return Minimalization.gradientDescent_F(method, coeff, x, stopConditions, learnRate)
@@ -82,4 +83,5 @@ class Minimalization:
     def gradientDescentRandomN(n, functionType, method, uniformDistributionRange, coeff, stopConditions, learnRate=0.2):
         x_values = [n]
         for i in range(n):
-            x_values.append(Minimalization.gradientDescentRandom(functionType, method, uniformDistributionRange, coeff, stopConditions, learnRate))
+            x_values.append(Minimalization.gradientDescentRandom(functionType, method, uniformDistributionRange, coeff,
+                                                                 stopConditions, learnRate))
