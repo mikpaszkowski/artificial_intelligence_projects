@@ -26,14 +26,14 @@ def main():
 
         elif functionType == 'G(x)':
             vectorCoeff = getVectorFunctionCoeff()
-            # conditions = getStoppingConditions()
-            # numOfRestarts = getNumOfRestartMode()
-            # if startingPointType == 'Defined Manually':
-            #     startingPoint = getStartingPointValue()
-            #     gradientDescent(scalarCoeff, startingPoint, conditions)
-            # elif startingPointType == 'Randomly generated':
-            #     uniformDistributionRange = getRangeOfUniformDistribution()
-            #     gradientDescentRandom(uniformDistributionRange, scalarCoeff, conditions)
+            conditions = getStoppingConditions()
+            numOfRestarts = getNumOfRestartMode()
+            if startingPointType == 'Defined Manually':
+                startingPoint = getStartingPointValue()
+                gradientDescent(scalarCoeff, startingPoint, conditions)
+            elif startingPointType == 'Randomly generated':
+                uniformDistributionRange = getRangeOfUniformDistribution()
+                gradientDescentRandom(uniformDistributionRange, scalarCoeff, conditions)
     elif method == 'Newton':
         if functionType == 'F(x)':
             scalarCoeff = getScalarFunctionCoeff()

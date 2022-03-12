@@ -1,10 +1,9 @@
-from enum import Enum
-
+import numpy
 from PyInquirer import prompt
-
 from ScalarFunCoeff import ScalarFunCoeff
 from StopConditions import StopConditions
 from VectorFunCoeff import VectorFunCoeff
+from enum import Enum
 from validators import CoefficientValidator
 
 
@@ -48,24 +47,33 @@ def getVectorFunctionCoeff():
         {
             'type': 'input',
             'name': 'c',
+            'default': '1',
             'message': 'Please enter the value of scalar \'c\' coefficient',
             'validate': CoefficientValidator
         },
         {
             'type': 'input',
             'name': 'b',
-            'message': 'Please enter the values of d-dimensional vector \'c\' coefficient separated by comma',
+            'default': '1; 1',
+            'message': 'Please enter the values of d-dimensional vector \'c\' coefficient separated by \',\' (row), \';\' (column)',
 
         },
         {
             'type': 'input',
             'name': 'x',
-            'message': 'Please enter the values of d-dimensional vector \'x\' coefficient separated by comma',
-
+            'default': '1; 1',
+            'message': 'Please enter the values of d-dimensional vector \'x\' coefficient separated by space (row), \';\' (column)',
+        },
+        {
+            'type': 'input',
+            'name': 'A',
+            'default': "1 1; -1 1",
+            'message': 'Please enter the values of d-dimensional vector \'x\' coefficient separated by \',\' (row), \';\' (column)',
         }
     ]
     answers = prompt(questions_g)
-    return VectorFunCoeff(float(answers['c']), float(answers['b']), float(answers['x']))
+    return VectorFunCoeff(float(answers['c']), numpy.matrix(answers['b']), numpy.matrix(answers['x']),
+                          numpy.matrix(answers['A']))
 
 
 def getScalarFunctionCoeff():
@@ -129,7 +137,6 @@ def getRangeOfUniformDistribution():
     return float(answer['low']), float(answer['high'])
 
 
-
 def getStartingPointType():
     answers = prompt([
         {
@@ -148,10 +155,17 @@ def getStartingPointType():
 def getStoppingConditions():
     answers = prompt([
         {
+            'type': 'list',
+            'name': 'stoppingConditionType',
+            'message': 'Please choose stopping condition',
+            'choices': ['Maximal iterations', 'Desired value', 'Timeout']
+        },
+        {
             'type': 'input',
             'name': 'iterations',
             'message': 'Please enter the maximal number of iterations',
             'default': '100',
+            'when': lambda answers: answers['stoppingConditionType'] == "Maximal iterations"
             # 'validate': lambda num: float(num) > 0 or 'Value must be bigger than 0!'
         },
         {
@@ -159,6 +173,7 @@ def getStoppingConditions():
             'name': 'desired',
             'message': 'Please enter the desired value to be reached',
             'default': '0.01',
+            'when': lambda answers: answers['stoppingConditionType'] == "Desired value"
             # 'validate': lambda val: float(val) > 0.0 or 'Desired value must be a number!'
         },
         {
@@ -166,26 +181,45 @@ def getStoppingConditions():
             'name': 'timeout',
             'message': 'Please enter the maximal computation timeout (seconds)',
             'default': '1000',
+            'when': lambda answers: answers['stoppingConditionType'] == "Timeout"
             # 'validate': lambda val: int(val) > 0 or 'Value must be a number bigger than 0!'
         },
         {
             'type': 'input',
             'name': 'tolerance',
-            'message': 'Please enter the minimal tolerance value for termnation of process',
+            'message': 'Please enter the minimal tolerance value for termination of process',
             'default': '0.0001',
             # 'validate': lambda val: float(val) > 0.0 or 'Value must be a number bigger than 0!'
         }
     ])
-    return StopConditions(int(answers['iterations']), float(answers['desired']), int(answers['timeout']),
-                          float(answers['tolerance']))
+    stoppingConditionType = answers['stoppingConditionType']
+    tolerance = float(answers['tolerance'])
+    if stoppingConditionType == 'Maximal iterations':
+        return StopConditions(tolerance, float(answers['iterations']), stoppingConditionType)
+    elif stoppingConditionType == 'Desired value':
+        return StopConditions(tolerance, float(answers['desired']), stoppingConditionType)
+    else:
+        return StopConditions(tolerance, float(answers['timeout']), stoppingConditionType)
 
 
 def getNumOfRestartMode():
-    answer = prompt({
-        'type': 'input',
-        'name': 'numOfRestarts',
-        'message': 'Please enter the number of times the optimization process to be restarted',
-        'default': '10',
-        'validate': lambda val: (str(val).isdigit() and int(val) > 0) or 'Value must be a number bigger than 0!'
-    })
-    return int(answer['numOfRestarts'])
+    answers = prompt([
+        {
+            'type': 'confirm',
+            'message': 'Do you want to use batch/restart mode?',
+            'name': 'restartMode',
+            'default': True
+        },
+        {
+            'type': 'input',
+            'name': 'numOfRestarts',
+            'message': 'Please enter the number of times the optimization process to be restarted',
+            'default': '10',
+            'when': lambda answer: answer['restartMode'],
+        }
+    ])
+    isRestartMode = answers['restartMode']
+    if isRestartMode == True:
+        return isRestartMode, answers['numOfRestarts']
+    else:
+        return isRestartMode
