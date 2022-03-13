@@ -263,6 +263,6 @@ def getNumOfRestartMode():
     ])
     isRestartMode = answers['restartMode']
     if isRestartMode == True:
-        return RestartMode(answers['numOfRestarts'], isRestartMode)
+        return RestartMode(int(answers['numOfRestarts']), isRestartMode)
     else:
         return RestartMode(0, isRestartMode);

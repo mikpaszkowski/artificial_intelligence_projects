@@ -1,43 +1,41 @@
 from __future__ import print_function, unicode_literals
 
+import numpy
 from Minimalization import Minimalization
 from cmdQuestions import getMethodAndFunctionType, getStartingPointType, getScalarFunctionCoeff, getStoppingConditions, \
     getNumOfRestartMode, getStartingPointValue, getRangeOfUniformDistribution, getVectorFunctionCoeff, \
     StartingPointType, MethodType, FunctionType
-import numpy
+
 
 def main():
     method, functionType = getMethodAndFunctionType()
 
     startingPointType = getStartingPointType()
 
-    if functionType == FunctionType.SCALAR:
-        scalarCoeff = getScalarFunctionCoeff()
-        conditions = getStoppingConditions()
-        restartMode = getNumOfRestartMode()
+    scalarCoeff = getScalarFunctionCoeff()
+    conditions = getStoppingConditions()
+    restartMode = getNumOfRestartMode()
 
-        if startingPointType == StartingPointType.MANUAL:
-            startingPoint = getStartingPointValue(functionType)
-            Minimalization.gradientDescent_F(method, scalarCoeff, startingPoint, conditions)
+    if startingPointType == StartingPointType.MANUAL:
+        startingPoint = getStartingPointValue(functionType)
 
-        elif startingPointType == StartingPointType.RANDOM:
-            uniformDistributionRange = getRangeOfUniformDistribution()
-            Minimalization.gradientDescentRandom(functionType, method, uniformDistributionRange, scalarCoeff,
-                                                 conditions)
+        if restartMode.isEnabled:
+            x, fx = Minimalization.optimizeRestartMode(restartMode.numOfIterations, functionType, method, scalarCoeff, startingPoint,
+                                               conditions)
+            print(x)
+            print(fx)
+        else:
+            x, fx = Minimalization.optimize(functionType, method, scalarCoeff, startingPoint, conditions)
+            print(x)
+            print(fx)
 
-    elif functionType == FunctionType.VECTOR:
-        vectorCoeff = getVectorFunctionCoeff()
-        conditions = getStoppingConditions()
-        numOfRestarts = getNumOfRestartMode()
-        if startingPointType == StartingPointType.MANUAL:
-            startingPoint = getStartingPointValue(functionType)
-            l = numpy.dot(numpy.transpose(startingPoint), numpy.dot(vectorCoeff.A, startingPoint))
-            print(numpy.dot(numpy.transpose(startingPoint), numpy.dot(vectorCoeff.A, startingPoint)))
-            Minimalization.gradientDescent_G(method, vectorCoeff, startingPoint, conditions)
-        elif startingPointType == StartingPointType.RANDOM:
-            uniformDistributionRange = getRangeOfUniformDistribution()
-            Minimalization.gradientDescentRandom(functionType, method, uniformDistributionRange, vectorCoeff,
-                                                 conditions)
+    elif startingPointType == StartingPointType.RANDOM:
+        uniformDistributionRange = getRangeOfUniformDistribution()
+        if restartMode.isEnabled:
+            Minimalization.optimizeRandomRestartMode(restartMode.numOfIterations, functionType, method,
+                                                     uniformDistributionRange, scalarCoeff, conditions)
+        else:
+            Minimalization.optimizeRandom(functionType, method, uniformDistributionRange, scalarCoeff, conditions)
 
 
 if __name__ == '__main__':

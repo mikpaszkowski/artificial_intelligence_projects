@@ -1,4 +1,4 @@
 class RestartMode:
-    def __init__(self, numOfIterations = 0, isRestartModeEnabled = True):
+    def __init__(self, numOfIterations = 0, isEnabled = True):
         self.numOfIterations = numOfIterations
-        self.isRestartModeEnabled = isRestartModeEnabled
+        self.isEnabled = isEnabled
