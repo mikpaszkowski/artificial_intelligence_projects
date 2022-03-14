@@ -27,10 +27,10 @@ def gradientDescent(type, coeff, startValue, stopConditions, learnRate=0.001):
     return x, steps
 
 
-def optimalisationG (type, coeff, startValue, stopConditions, learnRate=0.001)):
+def optimalisationG (type, coeff, startValue, stopConditions, learnRate=0.001):
 	startTime = time.time()
 	k = 0
-    x = startValue
+	x = startValue
 	for i in range(maxIter):
 		#print(x)
 		if(type == "g"): #gradient descent
@@ -38,7 +38,7 @@ def optimalisationG (type, coeff, startValue, stopConditions, learnRate=0.001)):
 #			diff = learnRate * (numpy.transpose(b) + numpy.dot(a,numpy.transpose(x)) + numpy.dot(numpy.transpose(a), numpy.transpose(x))) #learnRate*(3*a*x**2 + 2*b*x + c)
 		elif(type == "n"): #newton's formula
 
-			diff =  learnRate * numpy.divide(numpy.dot(numpy.transpose(x),numpy.dot(coeff.a,x)) + numpy.dot(numpy.transpose(coeff.b),x)+c  ,numpy.dot(2,numpy.dot(coeff.a, x))+ coeff.b) 
+			diff =  learnRate * numpy.divide(numpy.dot(numpy.transpose(x),numpy.dot(coeff.a,x)) + numpy.dot(numpy.transpose(coeff.b),x)+coeff.c  ,numpy.dot(2,numpy.dot(coeff.a, x))+ coeff.b) 
 #			diff =  learnRate * numpy.divide(numpy.dot(2,numpy.dot(a, x))+ b ,numpy.dot(2,a)) 
 #			diff =  learnRate * numpy.divide((numpy.transpose(b) + numpy.dot(a,numpy.transpose(x)) + numpy.dot(numpy.transpose(a), numpy.transpose(x))),(a+numpy.transpose(a))) 
 #           learnRate * (c+ numpy.dot(numpy.transpose(b), x) + numpy.dot(numpy.transpose(x), numpy.dot(a, x)))/(b + numpy.dot(a,x) + numpy.dot(numpy.transpose(a), x)) #learnRate * (a*x**3+b*x**2+c*x+d)/(3*a*x**2+2*b*x+c)
