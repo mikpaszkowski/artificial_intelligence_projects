@@ -1,4 +1,5 @@
 from enum import Enum
+from operator import truediv
 
 from PyInquirer import prompt
 
@@ -54,18 +55,34 @@ def getVectorFunctionCoeff():
         {
             'type': 'input',
             'name': 'b',
-            'message': 'Please enter the values of d-dimensional vector \'c\' coefficient separated by comma',
+            'message': 'Please enter the values of d-dimensional vector \'b\' coefficient separated by comma',
 
         },
         {
             'type': 'input',
-            'name': 'x',
-            'message': 'Please enter the values of d-dimensional vector \'x\' coefficient separated by comma',
+            'name': 'a',
+            'message': 'Please enter the values of d-dimensional matrix \'a\' coefficient separated by comma and semicolon\n(semicolon between lines, comma between values)',
 
         }
     ]
-    answers = prompt(questions_g)
-    return VectorFunCoeff(float(answers['c']), float(answers['b']), float(answers['x']))
+    while(True):
+        answers = prompt(questions_g)
+        b = list(map(float, answers['b'].split(",")))
+        temp = answers['a'].split(";")
+
+        
+        a = []
+        for i in temp:
+            a.append (list(map(float,i.split(","))))
+        
+        if(len(a) == len(a[0])):
+            if(len(a) == len(b)):
+                break
+            else:
+                print("a, b and x dimensions don't match")
+        else:
+            print("a has to be a square matrix")
+    return VectorFunCoeff(float(answers['c']), b, a)
 
 
 def getScalarFunctionCoeff():
@@ -109,6 +126,23 @@ def getStartingPointValue():
     })
     return float(answer['startingPoint'])
 
+def getStartingVectorValue(desiredLen):
+    questionsGStartingVector = {
+        'type': 'input',
+        'name': 'startingVector',
+        'message': 'Please enter the starting vector (of the same length as b vector, separated by commas)'
+    }
+    while True:
+        answers = prompt(questionsGStartingVector)
+        vector = list(map(float, answers['startingVector'].split(",")))
+        if(len(vector) == desiredLen):
+            break
+        else:
+            print("Starting vector has to be of length: ", desiredLen)
+    return vector
+
+
+
 
 def getRangeOfUniformDistribution():
     answer = prompt([
@@ -116,13 +150,13 @@ def getRangeOfUniformDistribution():
             'type': 'input',
             'name': 'low',
             "message": 'Please enter the \'low\' value of the range for uniform distribution',
-            "when": lambda answers: answers['startingPointType'] == "Randomly generated"
+            #"when": lambda answers: answers['startingPointType'] == "Randomly generated"
         },
         {
             'type': 'input',
             'name': 'high',
             'message': 'Please enter the \'high\' value of the range for uniform distribution',
-            'when': lambda answers: answers['startingPointType'] == 'Randomly generated'
+           # 'when': lambda answers: answers['startingPointType'] == 'Randomly generated'
         }
     ])
 
@@ -150,7 +184,7 @@ def getStoppingConditions():
             'type': 'input',
             'name': 'iterations',
             'message': 'Please enter the maximal number of iterations',
-            'default': '100',
+            'default': '10000',
             # 'validate': lambda num: float(num) > 0 or 'Value must be bigger than 0!'
         },
         {
