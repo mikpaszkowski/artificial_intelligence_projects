@@ -1,36 +1,82 @@
-from enum import Enum
-from operator import truediv
+from enum import Enum, unique
 
+import numpy
 from PyInquirer import prompt
 
+from DistributionRange import DistributionRange
+from RestartMode import RestartMode
 from ScalarFunCoeff import ScalarFunCoeff
 from StopConditions import StopConditions
 from VectorFunCoeff import VectorFunCoeff
 from validators import CoefficientValidator
 
 
+@unique
 class MethodType(Enum):
-    GRADIENT_DESCENT = 1
-    NEWTON = 2
+    GRADIENT_DESCENT = 'Gradient Descent'
+    NEWTON = 'Newton'
+
+    def fromString(value):
+        if value == 'Gradient Descent':
+            return MethodType.GRADIENT_DESCENT
+        elif value == 'Newton':
+            return MethodType.NEWTON
+        else:
+            raise TypeError("There is enum of type ", value)
 
 
+@unique
 class StartingPointType(Enum):
-    MANUAL = 1,
-    RANDOM = 2
+    MANUAL = 'Defined manually',
+    RANDOM = 'Randomly generated'
+
+    def fromString(value):
+        if value == 'Defined manually':
+            return StartingPointType.MANUAL
+        elif value == 'Randomly generated':
+            return StartingPointType.RANDOM
+        else:
+            raise TypeError("There is enum of type ", value)
 
 
+@unique
 class FunctionType(Enum):
-    SCALAR = 1,
-    VECTOR = 2
+    SCALAR = 'F(x)'
+    VECTOR = 'G(x)'
+
+    def fromString(value):
+        if value == 'F(x)':
+            return FunctionType.SCALAR
+        elif value == 'G(x)':
+            return FunctionType.VECTOR
+        else:
+            raise TypeError("There is enum of type ", value)
+
+
+@unique
+class StoppingConditionType(Enum):
+    ITERATIONS = 'Maximal iterations',
+    DESIRED_VALUE = "Desired value",
+    TIMEOUT = "Timeout"
+
+    def fromString(value):
+        if value == 'Maximal iterations':
+            return StoppingConditionType.ITERATIONS
+        elif value == "Desired value":
+            return StoppingConditionType.DESIRED_VALUE
+        elif value == "Timeout":
+            return StoppingConditionType.TIMEOUT
+        else:
+            raise TypeError("There is enum of type ", value)
 
 
 def getMethodAndFunctionType():
-    promptQuestions = [
+    answers = prompt([
         {
             'type': 'list',
             'name': 'method',
             'message': 'What method of function minimization do you want?',
-            'choices': ['Gradient Descent', 'Newton\'s']
+            'choices': ['Gradient Descent', 'Newton']
         },
         {
             'type': 'list',
@@ -38,10 +84,8 @@ def getMethodAndFunctionType():
             'message': 'What function type should be optimized? (F(x) = ax^3 + bx^2 + cx +d, G(x) = c + b^Tx + x^TAx)',
             'choices': ['F(x)', 'G(x)']
         }
-    ]
-
-    answers = prompt(promptQuestions)
-    return answers['method'], answers['function_type']
+    ])
+    return MethodType.fromString(answers['method']), FunctionType.fromString(answers['function_type'])
 
 
 def getVectorFunctionCoeff():
@@ -49,40 +93,33 @@ def getVectorFunctionCoeff():
         {
             'type': 'input',
             'name': 'c',
+            'default': '10',
             'message': 'Please enter the value of scalar \'c\' coefficient',
             'validate': CoefficientValidator
         },
         {
             'type': 'input',
             'name': 'b',
-            'message': 'Please enter the values of d-dimensional vector \'b\' coefficient separated by comma',
+            'default': '1;1;1',
+            'message': 'Please enter the values of d-dimensional vector \'b\' coefficient separated by \',\' (row), \';\' (column)',
 
         },
+#        { x to jest starting point, więc pobieranie go tutaj jest nie potrzebne
+#            'type': 'input',
+#            'name': 'x',
+#            'default': '0;1;2',
+#            'message': 'Please enter the values of d-dimensional vector \'x\' coefficient separated by space (row), \';\' (column)',
+#        },
         {
             'type': 'input',
-            'name': 'a',
-            'message': 'Please enter the values of d-dimensional matrix \'a\' coefficient separated by comma and semicolon\n(semicolon between lines, comma between values)',
-
+            'name': 'A',
+            'default': "1,0,0;0,1,0;0,0,1",
+            'message': 'Please enter the values of positivie-definite matrix \'A\' separated by \',\' (row), \';\' (column)',
         }
     ]
-    while(True):
-        answers = prompt(questions_g)
-        b = list(map(float, answers['b'].split(",")))
-        temp = answers['a'].split(";")
-
-        
-        a = []
-        for i in temp:
-            a.append (list(map(float,i.split(","))))
-        
-        if(len(a) == len(a[0])):
-            if(len(a) == len(b)):
-                break
-            else:
-                print("a, b and x dimensions don't match")
-        else:
-            print("a has to be a square matrix")
-    return VectorFunCoeff(float(answers['c']), b, a)
+    answers = prompt(questions_g)
+    return VectorFunCoeff(float(answers['c']), numpy.matrix(answers['b']),
+                          numpy.matrix(answers['A']))
 
 
 def getScalarFunctionCoeff():
@@ -116,32 +153,18 @@ def getScalarFunctionCoeff():
     return ScalarFunCoeff(float(answers['a']), float(answers['d']), float(answers['c']), float(answers['d']))
 
 
-def getStartingPointValue():
+def getStartingPointValue(functionType):
     answer = prompt({
         'type': 'input',
         'name': 'startingPoint',
-        'message': 'Please enter the starting point',
-        'default': '1',
-        'validate': CoefficientValidator
+        'message': 'Please enter the starting point' if functionType == FunctionType.SCALAR else 'Please enter vector of starting points',
+        'default': '1' if functionType == FunctionType.SCALAR else '0;1;2',
+        # 'validate': CoefficientValidator
     })
-    return float(answer['startingPoint'])
-
-def getStartingVectorValue(desiredLen):
-    questionsGStartingVector = {
-        'type': 'input',
-        'name': 'startingVector',
-        'message': 'Please enter the starting vector (of the same length as b vector, separated by commas)'
-    }
-    while True:
-        answers = prompt(questionsGStartingVector)
-        vector = list(map(float, answers['startingVector'].split(",")))
-        if(len(vector) == desiredLen):
-            break
-        else:
-            print("Starting vector has to be of length: ", desiredLen)
-    return vector
-
-
+    if functionType == FunctionType.SCALAR:
+        return float(answer['startingPoint'])
+    elif functionType == FunctionType.VECTOR:
+        return numpy.matrix(answer['startingPoint'])
 
 
 def getRangeOfUniformDistribution():
@@ -149,42 +172,43 @@ def getRangeOfUniformDistribution():
         {
             'type': 'input',
             'name': 'low',
-            "message": 'Please enter the \'low\' value of the range for uniform distribution',
-            #"when": lambda answers: answers['startingPointType'] == "Randomly generated"
+            "message": 'Please enter the \'low\' value of the range for uniform distribution'
         },
         {
             'type': 'input',
             'name': 'high',
-            'message': 'Please enter the \'high\' value of the range for uniform distribution',
-           # 'when': lambda answers: answers['startingPointType'] == 'Randomly generated'
+            'message': 'Please enter the \'high\' value of the range for uniform distribution'
         }
     ])
-
-    return float(answer['low']), float(answer['high'])
+    return DistributionRange(float(answer['low']), float(answer['high']))
 
 
 def getStartingPointType():
-    answers = prompt([
+    answers = prompt(
         {
             'type': 'list',
             'name': 'startingPointType',
             'message': 'What kind of starting point do you want ?',
             'choices': ['Defined manually', 'Randomly generated']
         }
-    ])
-    if answers['startingPointType'] == 'Defined manually':
-        return StartingPointType.MANUAL
-    else:
-        return StartingPointType.RANDOM
+    )
+    return StartingPointType.fromString(answers['startingPointType'])
 
 
 def getStoppingConditions():
     answers = prompt([
         {
+            'type': 'list',
+            'name': 'stoppingConditionType',
+            'message': 'Please choose stopping condition',
+            'choices': ['Maximal iterations', 'Desired value', 'Timeout']
+        },
+        {
             'type': 'input',
             'name': 'iterations',
             'message': 'Please enter the maximal number of iterations',
             'default': '10000',
+            'when': lambda answers: answers['stoppingConditionType'] == "Maximal iterations"
             # 'validate': lambda num: float(num) > 0 or 'Value must be bigger than 0!'
         },
         {
@@ -192,33 +216,53 @@ def getStoppingConditions():
             'name': 'desired',
             'message': 'Please enter the desired value to be reached',
             'default': '0.01',
+            'when': lambda answers: answers['stoppingConditionType'] == "Desired value"
             # 'validate': lambda val: float(val) > 0.0 or 'Desired value must be a number!'
         },
         {
             'type': 'input',
             'name': 'timeout',
             'message': 'Please enter the maximal computation timeout (seconds)',
-            'default': '1000',
+            'default': '3',
+            'when': lambda answers: answers['stoppingConditionType'] == "Timeout"
             # 'validate': lambda val: int(val) > 0 or 'Value must be a number bigger than 0!'
         },
-        {
-            'type': 'input',
-            'name': 'tolerance',
-            'message': 'Please enter the minimal tolerance value for termnation of process',
-            'default': '0.0001',
-            # 'validate': lambda val: float(val) > 0.0 or 'Value must be a number bigger than 0!'
-        }
+        # {
+        #     'type': 'input',
+        #     'name': 'tolerance',
+        #     'message': 'Please enter the minimal tolerance value for termination of process',
+        #     'default': '0.0001',
+        #     # 'validate': lambda val: float(val) > 0.0 or 'Value must be a number bigger than 0!'
+        # }
     ])
-    return StopConditions(int(answers['iterations']), float(answers['desired']), int(answers['timeout']),
-                          float(answers['tolerance']))
+    stoppingConditionType = answers['stoppingConditionType']
+    # tolerance = float(answers['tolerance'])
+    if stoppingConditionType == 'Maximal iterations':
+        return StopConditions(float(answers['iterations']), StoppingConditionType.ITERATIONS)
+    elif stoppingConditionType == 'Desired value':
+        return StopConditions(float(answers['desired']), StoppingConditionType.DESIRED_VALUE)
+    else:
+        return StopConditions(float(answers['timeout']), StoppingConditionType.TIMEOUT)
 
 
 def getNumOfRestartMode():
-    answer = prompt({
-        'type': 'input',
-        'name': 'numOfRestarts',
-        'message': 'Please enter the number of times the optimization process to be restarted',
-        'default': '10',
-        'validate': lambda val: (str(val).isdigit() and int(val) > 0) or 'Value must be a number bigger than 0!'
-    })
-    return int(answer['numOfRestarts'])
+    answers = prompt([
+        {
+            'type': 'confirm',
+            'message': 'Do you want to use batch/restart mode?',
+            'name': 'restartMode',
+            'default': True
+        },
+        {
+            'type': 'input',
+            'name': 'numOfRestarts',
+            'message': 'Please enter the number of times the optimization process to be restarted',
+            'default': '10',
+            'when': lambda answer: answer['restartMode'],
+        }
+    ])
+    isRestartMode = answers['restartMode']
+    if isRestartMode == True:
+        return RestartMode(int(answers['numOfRestarts']), isRestartMode)
+    else:
+        return RestartMode(0, isRestartMode);
