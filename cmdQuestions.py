@@ -104,7 +104,6 @@ def getStartingPointValue(functionType):
         'name': 'startingPoint',
         'message': 'Please enter the starting point' if functionType == FunctionType.SCALAR else 'Please enter vector of starting points',
         'default': '1' if functionType == FunctionType.SCALAR else '0;1;2',
-        # 'validate': CoefficientValidator
     })
     if functionType == FunctionType.SCALAR:
         return float(answer['startingPoint'])
@@ -117,12 +116,14 @@ def getRangeOfUniformDistribution():
         {
             'type': 'input',
             'name': 'low',
-            "message": 'Please enter the \'low\' value of the range for uniform distribution'
+            'message': 'Please enter the \'low\' value of the range for uniform distribution',
+            'validate': lambda value: value != "" or "You should specify valid value of \'low\'"
         },
         {
             'type': 'input',
             'name': 'high',
-            'message': 'Please enter the \'high\' value of the range for uniform distribution'
+            'message': 'Please enter the \'high\' value of the range for uniform distribution',
+            'validate': lambda value: value != "" or "You should specify valid value of \'low\'"
         }
     ])
     return DistributionRange(float(answer['low']), float(answer['high']))

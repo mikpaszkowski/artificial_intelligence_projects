@@ -13,6 +13,7 @@ if __name__ == '__main__':
         coeff = getScalarFunctionCoeff()
     else:
         coeff = getVectorFunctionCoeff()
+
     conditions = getStoppingConditions()
     restartMode = getNumOfRestartMode()
     learningRate = getLearningRate()
@@ -45,7 +46,8 @@ if __name__ == '__main__':
             print("mean function value: ", mean_value)
             print("standard deriviation from mean value: ", standard_der_value)
         else:
-            x, fx = Minimalization.optimizeRandom(functionType, method, uniformDistributionRange, coeff, conditions, learningRate)
+            x, fx = Minimalization.optimizeRandom(functionType, method, uniformDistributionRange, coeff, conditions,
+                                                  learningRate)
 
             print("position:\n", x)
             print("value at\n", x, " : ", fx)

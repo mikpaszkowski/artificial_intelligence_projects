@@ -1,6 +1,6 @@
 from conditionCheck import *
-from helpers import *
 from enums import *
+from helpers import *
 
 
 class Minimalization:
@@ -20,7 +20,7 @@ class Minimalization:
         while True:
             diff = learnRate * getGradientValue_F(method, coeff, x)
             isFinished, message = checkConditions_F(stopConditions, coeff, startTime,
-                                                                   currNumOfIterations, x)
+                                                    currNumOfIterations, x)
             if isFinished:
                 print(message)
                 break
@@ -36,7 +36,7 @@ class Minimalization:
         while True:
             diff = learnRate * getGradientValue_G(method, coeff, x)
             isFinished, message = checkConditions_G(stopConditions, coeff, startTime,
-                                                                   currIteration, x)
+                                                    currIteration, x)
             if isFinished:
                 print(message)
                 break
@@ -49,9 +49,7 @@ class Minimalization:
         if functionType == FunctionType.SCALAR:
             x = numpy.random.normal((uniformDistributionRange.high + uniformDistributionRange.low) / 2,
                                     (uniformDistributionRange.high - uniformDistributionRange.low) / 6)
-            print("calling optimize_F with x = ", x)
             temp = Minimalization.optimize_F(method, coeff, x, stopConditions, learnRate)
-            print(temp[0])
             return temp
         else:
             x = numpy.zeros([len(coeff.b), 1])
@@ -66,17 +64,13 @@ class Minimalization:
                                   learnRate=0.2):
         x = []
         x_values = []
-        for i in range(n):
+        for _ in range(n):
             temp = Minimalization.optimizeRandom(functionType, method, uniformDistributionRange, coeff,
                                                  stopConditions, learnRate)
             x.append(numpy.transpose(temp[0]))
             x_values.append(temp[1])
 
-        # mean = numpy.mean(x_values)
-        # standardDeriviation = numpy.std(x_values)
-        print(x)
         return numpy.mean(x), numpy.std(x), numpy.mean(x_values), numpy.std(x_values)
-        # return mean value of arguments and function value of that
 
     @staticmethod
     def optimizeRestartMode(n, functionType, method, coeff, startValue, stopConditions, learnRate=0.2):
@@ -91,9 +85,3 @@ class Minimalization:
             x_values.append(temp[1])
 
         return numpy.mean(x), numpy.std(x), numpy.mean(x_values), numpy.std(x_values)
-    # mean = numpy.mean(x_values)
-    # standardDeriviation = numpy.std(x_values)
-    # return mean, standardDeriviation
-    # divide optimizeRestartMode into separate logic for F and G
-
-    # return mean value of arguments and function value of that

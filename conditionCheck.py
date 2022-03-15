@@ -1,7 +1,6 @@
 import time
-
-from helpers import *
 from enums import *
+from helpers import *
 
 
 def isTimeoutReached(startTime, stopConditions):
