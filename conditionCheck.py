@@ -17,7 +17,7 @@ def isDesiredValueReached_F(coeff, stopConditions, x):
 
 
 def isIterationNumberReached(currIteration, stopConditions):
-    return stopConditions.type == StoppingConditionType.ITERATIONS and currIteration == stopConditions.value - 1
+    return stopConditions.type == StoppingConditionType.ITERATIONS and currIteration >= stopConditions.value - 1
 
 
 def checkConditions_G(stopConditions, coeff, startTime, currNumOfIterations, x):
