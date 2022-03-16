@@ -1,7 +1,6 @@
 import numpy
-from PyInquirer import prompt
-
 from DistributionRange import DistributionRange
+from PyInquirer import prompt
 from RestartMode import RestartMode
 from ScalarFunCoeff import ScalarFunCoeff
 from StopConditions import StopConditions
@@ -155,7 +154,6 @@ def getStoppingConditions():
             'message': 'Please enter the maximal number of iterations',
             'default': '10000',
             'when': lambda answers: answers['stoppingConditionType'] == "Maximal iterations"
-            # 'validate': lambda num: float(num) > 0 or 'Value must be bigger than 0!'
         },
         {
             'type': 'input',
@@ -163,7 +161,6 @@ def getStoppingConditions():
             'message': 'Please enter the desired value to be reached',
             'default': '0.01',
             'when': lambda answers: answers['stoppingConditionType'] == "Desired value"
-            # 'validate': lambda val: float(val) > 0.0 or 'Desired value must be a number!'
         },
         {
             'type': 'input',
@@ -171,7 +168,6 @@ def getStoppingConditions():
             'message': 'Please enter the maximal computation timeout (seconds)',
             'default': '3',
             'when': lambda answers: answers['stoppingConditionType'] == "Timeout"
-            # 'validate': lambda val: int(val) > 0 or 'Value must be a number bigger than 0!'
         }
     ])
     stoppingConditionType = answers['stoppingConditionType']
