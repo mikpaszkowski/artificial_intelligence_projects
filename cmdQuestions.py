@@ -6,7 +6,8 @@ from ScalarFunCoeff import ScalarFunCoeff
 from StopConditions import StopConditions
 from VectorFunCoeff import VectorFunCoeff
 from enums import MethodType, FunctionType, StartingPointType, StoppingConditionType
-from validators import NumberValidator
+from validators import NumberValidator, IntegerValidator
+
 
 def getMethodAndFunctionType():
     answers = prompt([
@@ -44,7 +45,6 @@ def getVectorFunctionCoeff():
         },
         {
             'type': 'input',
-
             'name': 'A',
             'default': "1,0,0;0,1,0;0,0,1",
             'message': 'Please enter the values of positivie-definite matrix \'A\' separated by \',\' (row), \';\' (column)',
@@ -60,7 +60,8 @@ def getLearningRate():
         'type': 'input',
         'name': 'learningRate',
         'message': 'Please enter learning rate value',
-        'default': '0.001'
+        'default': '0.001',
+        'validate': NumberValidator
     })
 
     return float(answers['learningRate'])
@@ -115,7 +116,6 @@ def getRangeOfUniformDistribution():
         {
             'type': 'input',
             'name': 'low',
-
             'message': 'Please enter the \'low\' value of the range for uniform distribution',
             'validate': NumberValidator,
 
@@ -155,7 +155,8 @@ def getStoppingConditions():
             'name': 'iterations',
             'message': 'Please enter the maximal number of iterations',
             'default': '10000',
-            'when': lambda answers: answers['stoppingConditionType'] == "Maximal iterations"
+            'when': lambda answers: answers['stoppingConditionType'] == "Maximal iterations",
+            'validate': IntegerValidator
         },
         {
             'type': 'input',
@@ -197,6 +198,7 @@ def getNumOfRestartMode():
             'message': 'Please enter the number of times the optimization process to be restarted',
             'default': '10',
             'when': lambda answer: answer['restartMode'],
+            'validate': IntegerValidator
         }
     ])
     isRestartMode = answers['restartMode']
