@@ -6,7 +6,7 @@ from ScalarFunCoeff import ScalarFunCoeff
 from StopConditions import StopConditions
 from VectorFunCoeff import VectorFunCoeff
 from enums import MethodType, FunctionType, StartingPointType, StoppingConditionType
-from validators import CoefficientValidator
+from validators import NumberValidator
 
 def getMethodAndFunctionType():
     answers = prompt([
@@ -33,13 +33,13 @@ def getVectorFunctionCoeff():
             'name': 'c',
             'default': '10',
             'message': 'Please enter the value of scalar \'c\' coefficient',
-            'validate': CoefficientValidator
+            'validate': NumberValidator
         },
         {
             'type': 'input',
             'name': 'b',
             'default': '1;1;1',
-            'message': 'Please enter the values of d-dimensional vector \'b\' coefficient separated by \',\' (row), \';\' (column)',
+            'message': 'Please enter the values of vertcial d-dimensional vector \'b\' coefficient separated by \';\'',
 
         },
         {
@@ -72,26 +72,26 @@ def getScalarFunctionCoeff():
             'type': 'input',
             'name': 'a',
             'message': 'Please enter value of \'a\' coefficient:',
-            'validate': CoefficientValidator
+            'validate': NumberValidator
         },
         {
             'type': 'input',
             'name': 'b',
             'message': 'Please enter value of \'b\' coefficient:',
-            'validate': CoefficientValidator
+            'validate': NumberValidator
 
         },
         {
             'type': 'input',
             'name': 'c',
             'message': 'Please enter value of \'c\' coefficient:',
-            'validate': CoefficientValidator
+            'validate': NumberValidator
         },
         {
             'type': 'input',
             'name': 'd',
             'message': 'Please enter value of \'d\' coefficient:',
-            'validate': CoefficientValidator
+            'validate': NumberValidator
         }
     ])
     return ScalarFunCoeff(float(answers['a']), float(answers['d']), float(answers['c']), float(answers['d']))
@@ -117,13 +117,14 @@ def getRangeOfUniformDistribution():
             'name': 'low',
 
             'message': 'Please enter the \'low\' value of the range for uniform distribution',
-            'validate': lambda value: value != "" or "You should specify valid value of \'low\'"
+            'validate': NumberValidator,
+
         },
         {
             'type': 'input',
             'name': 'high',
             'message': 'Please enter the \'high\' value of the range for uniform distribution',
-            'validate': lambda value: value != "" or "You should specify valid value of \'low\'"
+            'validate': NumberValidator
         }
     ])
     return DistributionRange(float(answer['low']), float(answer['high']))
@@ -161,14 +162,16 @@ def getStoppingConditions():
             'name': 'desired',
             'message': 'Please enter the desired value to be reached',
             'default': '0.01',
-            'when': lambda answers: answers['stoppingConditionType'] == "Desired value"
+            'when': lambda answers: answers['stoppingConditionType'] == "Desired value",
+            'validate': NumberValidator
         },
         {
             'type': 'input',
             'name': 'timeout',
             'message': 'Please enter the maximal computation timeout (seconds)',
             'default': '3',
-            'when': lambda answers: answers['stoppingConditionType'] == "Timeout"
+            'when': lambda answers: answers['stoppingConditionType'] == "Timeout",
+            'validate': NumberValidator
         }
     ])
     stoppingConditionType = answers['stoppingConditionType']

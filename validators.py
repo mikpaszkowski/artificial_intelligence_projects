@@ -1,11 +1,11 @@
 from prompt_toolkit.validation import Validator, ValidationError
+import re
 
-
-class CoefficientValidator(Validator):
+class NumberValidator(Validator):
     def validate(self, document):
-        ok = str(document.text).isdigit()
+        ok = re.match('\\d+(\\.\\d+)*', str(document.text))
         if not ok:
             raise ValidationError(
-                message='Function coefficient must be a number',
+                message='You must provide a valid number',
                 cursor_position=len(document.text)
             )
