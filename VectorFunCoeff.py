@@ -1,5 +1,6 @@
 class VectorFunCoeff:
-    def __init__(self, c, b, a):
+    def __init__(self, c, b, A):
         self.c = c
         self.b = b
-        self.a = a
+#        self.x = x x to starting point
+        self.A = A

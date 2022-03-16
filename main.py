@@ -1,100 +1,53 @@
 from __future__ import print_function, unicode_literals
 
+from Minimalization import Minimalization
 from cmdQuestions import getMethodAndFunctionType, getStartingPointType, getScalarFunctionCoeff, getStoppingConditions, \
-    getNumOfRestartMode, getStartingPointValue, getRangeOfUniformDistribution, getVectorFunctionCoeff, getStartingVectorValue, StartingPointType
-from gradient_descent import optimalisationF, optimalisationFRandom, optimalisationFRandomN, optimalisationG, optimalisationGRandom, optimalisationGRandomN
-# zmiany:
-#   nazwa gradientDescent zmieniona na optimisationF
-#   nazwy gradientDescentRandom i gradientDescentRandomN tak samo zmienione
-#   dodano zmienną type do wszystkich funkcji
-#   Funkcja getVectorFunctionCoeff zaimplementowana
-#   Funkcje optimalisationFRandom i optimalisationFRandomN zaimplemelntowane
-#   dadana funkcja getStartingVectorValue 
-#   Funkcje optimalisationGRandom i optimalisationGRandomN zaimplemelntowane
-#
-# ToDo:
-#   naprawić funkcje newtona dla G(x)
-#
-#
+    getNumOfRestartMode, getStartingPointValue, getRangeOfUniformDistribution, getVectorFunctionCoeff, \
+    StartingPointType, getLearningRate
 
-def main():
+if __name__ == '__main__':
     method, functionType = getMethodAndFunctionType()
 
     startingPointType = getStartingPointType()
+    if functionType == functionType.SCALAR:
+        coeff = getScalarFunctionCoeff()
+    else:
+        coeff = getVectorFunctionCoeff()
 
-    # tutaj w chuj powtórzeń kodu ale tak zostawiłem aby było wiadomo jakie przypadki rozpatrujemy
+    conditions = getStoppingConditions()
+    restartMode = getNumOfRestartMode()
+    learningRate = getLearningRate()
 
-    #Dzięki zmiennej type ten kod nie musi się powtarzać
-    if method == 'Gradient Descent': 
-        type = "g"
-    elif method == 'Newton\'s':
-        type = "n"
-    if functionType == 'F(x)':
-        scalarCoeff = getScalarFunctionCoeff()
-        conditions = getStoppingConditions()
-        numOfRestarts = getNumOfRestartMode()
+    if startingPointType == StartingPointType.MANUAL:
+        startingPoint = getStartingPointValue(functionType)
 
-        if numOfRestarts == 1:
-            if startingPointType == StartingPointType.MANUAL:
-                startingPoint = getStartingPointValue()
-                optimalisationF(type, scalarCoeff, startingPoint, conditions) 
+        if restartMode.isEnabled:
+            mean_x, standard_der_x, mean_value, standard_der_value = Minimalization.optimizeRestartMode(
+                restartMode.numOfIterations, functionType, method, coeff, startingPoint,
+                conditions, learningRate)
+            print("mean x: ", mean_x)
+            print("standard deriviation from mean x: ", standard_der_x)
+            print("mean function value: ", mean_value)
+            print("standard deriviation from mean value: ", standard_der_value)
+        else:
+            x, fx = Minimalization.optimize(functionType, method, coeff, startingPoint, conditions, learningRate)
 
-            elif startingPointType == StartingPointType.RANDOM:
-                uniformDistributionRange = getRangeOfUniformDistribution()
-                optimalisationFRandom(type, uniformDistributionRange, scalarCoeff, conditions)
-        elif numOfRestarts > 1:
-            uniformDistributionRange = getRangeOfUniformDistribution()
-            optimalisationFRandomN(type, numOfRestarts, uniformDistributionRange, scalarCoeff, conditions)
+            print("position:\n", x)
+            print("value at\n", x, " : ", fx)
 
-    elif functionType == 'G(x)':
-        print("a")
-        vectorCoeff = getVectorFunctionCoeff()
-        conditions = getStoppingConditions()
-        numOfRestarts = getNumOfRestartMode()
-        if numOfRestarts == 1:
-            print("b")
-         #   print("starting point type: ", startingPointType)
-            if startingPointType == StartingPointType.MANUAL:
-                print("c")
-                startingPoint = getStartingVectorValue(len(vectorCoeff.b))
-                optimalisationG(type, vectorCoeff, startingPoint, conditions)
-            elif startingPointType == StartingPointType.RANDOM:
-                print("d")
-                uniformDistributionRange = getRangeOfUniformDistribution()
-                optimalisationGRandom(type, uniformDistributionRange, vectorCoeff, conditions)
-        elif numOfRestarts > 1:
-            print("e")
-            uniformDistributionRange = getRangeOfUniformDistribution()
-            optimalisationGRandomN(type, numOfRestarts, uniformDistributionRange, vectorCoeff, conditions)
+    elif startingPointType == StartingPointType.RANDOM:
+        uniformDistributionRange = getRangeOfUniformDistribution()
+        if restartMode.isEnabled:
+            mean_x, standard_der_x, mean_value, standard_der_value = Minimalization.optimizeRandomRestartMode(
+                restartMode.numOfIterations, functionType, method,
+                uniformDistributionRange, coeff, conditions, learningRate)
+            print("mean x: ", mean_x)
+            print("standard deriviation from mean x: ", standard_der_x)
+            print("mean function value: ", mean_value)
+            print("standard deriviation from mean value: ", standard_der_value)
+        else:
+            x, fx = Minimalization.optimizeRandom(functionType, method, uniformDistributionRange, coeff, conditions,
+                                                  learningRate)
 
-#    elif method == 'Newton':
-#        if functionType == 'F(x)':
-#            scalarCoeff = getScalarFunctionCoeff()
-#            conditions = getStoppingConditions()
-#            numOfRestarts = getNumOfRestartMode()
-#
-#            if startingPointType == StartingPointType.MANUAL:
-#
-#                startingPoint = getStartingPointValue()
-#                optimalisationF(scalarCoeff, startingPoint, conditions)
-#
-#            elif startingPointType == StartingPointType.RANDOM:
-#
-#                uniformDistributionRange = getRangeOfUniformDistribution()
-#                optimalisationFRandom(uniformDistributionRange, scalarCoeff, conditions)
-#
-#        elif functionType == 'G(x)':
-#            vectorCoeff = getVectorFunctionCoeff()
-            # conditions = getStoppingConditions()
-            # numOfRestarts = getNumOfRestartMode()
-            # if startingPointType == 'Defined Manually':
-            #     startingPoint = getStartingPointValue()
-            #     optimalisationF(scalarCoeff, startingPoint, conditions)
-            # elif startingPointType == 'Randomly generated':
-            #     uniformDistributionRange = getRangeOfUniformDistribution()
-            #     optimalisationFRandom(uniformDistributionRange, scalarCoeff, conditions)
-
-
-if __name__ == '__main__':
-    print("*** Gradient Descent ***")
-    main()
+            print("position:\n", x)
+            print("value at\n", x, " : ", fx)
