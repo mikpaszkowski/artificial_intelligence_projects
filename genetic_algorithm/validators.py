@@ -71,6 +71,8 @@ class SymmetricMatrixValidator(Validator):
 class VectorValidator(Validator):
     def validate(self, document):
         matrix = numpy.matrix(document.text)
+        vector = matrix[0]
+        print(vector)
         num_of_dimensions = matrix.ndim
         ok = num_of_dimensions == 1
         if not ok:

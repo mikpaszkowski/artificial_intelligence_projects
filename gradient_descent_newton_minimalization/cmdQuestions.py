@@ -1,6 +1,7 @@
 import numpy
-from DistributionRange import DistributionRange
 from PyInquirer import prompt
+
+from DistributionRange import DistributionRange
 from RestartMode import RestartMode
 from ScalarFunCoeff import ScalarFunCoeff
 from StopConditions import StopConditions
