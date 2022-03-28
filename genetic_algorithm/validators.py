@@ -22,7 +22,7 @@ class ProbabilityValidator(Validator):
                 cursor_position=len(document.text)
             )
         probability = float(document.text)
-        is_probability_valid = probability >= 0 and probability <= 1
+        is_probability_valid = 0 <= probability <= 1
         if not is_probability_valid:
             raise ValidationError(
                 message='Probability value is not valid. It must be in range <0,1>',
@@ -71,10 +71,8 @@ class SymmetricMatrixValidator(Validator):
 class VectorValidator(Validator):
     def validate(self, document):
         matrix = numpy.matrix(document.text)
-        vector = matrix[0]
-        print(vector)
-        num_of_dimensions = matrix.ndim
-        ok = num_of_dimensions == 1
+        row, col = matrix.shape
+        ok = col == 1
         if not ok:
             raise ValidationError(
                 message="Provided vector is not valid!",
