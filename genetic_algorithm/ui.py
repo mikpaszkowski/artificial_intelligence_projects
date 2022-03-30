@@ -11,6 +11,7 @@ def get_function_coeff():
             'type': 'input',
             'name': 'A',
             'message': "Please enter the values of {n}x{n} positivie-definite matrix \'A\' separated by \',\' (row), \';\' (column):",
+            'default': '1,1,1,1,1;1,1,1,1,1;1,1,1,1,1;1,1,1,1,1;1,1,1,1,1',
             'validate': SymmetricMatrixValidator
         })
 
@@ -21,7 +22,8 @@ def get_function_coeff():
         answer_b = prompt({
             'type': 'input',
             'name': 'b',
-            'message': 'Please enter the values of n-length vector b, each separated by \',\' (i.e. 1,2,3,4,5):',
+            'message': 'Please enter the values of n-length vector b, each separated by \';\' (i.e. 1;2;3;4;5):',
+            'default': '1;2;3;4;5',
             'validate': VectorValidator
         })
         if numpy.matrix(answer_b['b']).size == matrix_A.shape[0]:
@@ -33,6 +35,7 @@ def get_function_coeff():
         'type': 'input',
         'name': 'c',
         'message': 'Please enter the value of scalar \'c\' coefficient:',
+        'default': "1",
         'validate': NumberValidator
     })
 
