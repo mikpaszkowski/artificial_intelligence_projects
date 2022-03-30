@@ -51,6 +51,9 @@ def tuples(population):
 
 def crossover(population, crossoverProbability):
     nextGen = []
+    if(len(population)%2!=0):
+        randomParent = population.pop(numpy.random.randint(0,len(population)-1))
+        nextGen.append(randomParent)
     parentTuples = tuples(population)
     for pair in parentTuples:
         if numpy.random.randint(0,1) < crossoverProbability:
