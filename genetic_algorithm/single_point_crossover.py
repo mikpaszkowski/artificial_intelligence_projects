@@ -3,21 +3,66 @@ import numpy
 def bitfield(n):
     return [int(digit) for digit in bin(n)[2:]] # [2:] to chop off the "0b" part
 
-def intToBin(n):#https://stackoverflow.com/questions/10321978/integer-to-bitfield-as-a-list
+def intToBin(n, numOfBits = 0):
+    if numOfBits == 0:
+        maximum = max(n)
+        minimum = min(n)
+        if(-minimum>maximum):
+            maximum = -minimum
+        
+        print ("maximum", maximum)
+        numOfBits = 0
+        while(maximum > 2** numOfBits):
+            numOfBits = numOfBits+1
+        numOfBits = numOfBits +1
+        print("numOfBits", numOfBits)
     ret = []
     j = 0
     for i in n:
-        ret.append([int(digit) for digit in bin(i)[2:]])# [2:] to chop off the "0b" part 
-        while(len(ret[j])<4):
+        if i >= 0:
+            ret.append([int(digit) for digit in bin(i)[2:]]) #https://stackoverflow.com/questions/10321978/integer-to-bitfield-as-a-list
+            while(len(ret[j])<numOfBits-1):
+                ret[j].insert(0,0)
+            while(len(ret[j])>numOfBits-1):
+                ret[j].pop(0)
             ret[j].insert(0,0)
+        else:
+            i = -i
+            arr = [int(digit) for digit in bin(i)[2:]] #https://stackoverflow.com/questions/10321978/integer-to-bitfield-as-a-list
+            for k in range(len(arr)):
+                if arr[k] == 0:
+                    arr[k] = 1
+                else:
+                    arr[k] = 0
+            ret.append(arr)
+            while(len(ret[j])<numOfBits-1):
+                ret[j].insert(0,1)
+            while(len(ret[j])>numOfBits-1):
+                ret[j].pop(0)
+            ret[j].insert(0,1)
+
 
         j=j+1
     return  ret
 
-def binToInt(bitlist):#https://stackoverflow.com/questions/12461361/bits-list-to-integer-in-python
-    out = 0
-    for bit in bitlist:
-        out = (out << 1) | bit
+def binToInt(n):
+    out = []
+    for i in range(len(n)):
+        o = 0                   #https://stackoverflow.com/questions/12461361/bits-list-to-integer-in-python
+        if n[i][0] == 0:
+            for bit in n[i]:
+                o = (o << 1) | bit
+            
+        else:
+            for bit in n[i]:
+                if bit == 1:
+                    bit = 0
+                else:
+                    bit = 1
+                o = (o << 1) | bit
+            o = -o
+        out.append(o)
+
     return out
 
 def chromosomeCrossover(p1,p2):
