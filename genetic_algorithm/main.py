@@ -13,9 +13,4 @@ if __name__ == '__main__':
     print(population)
     print("last population values:")
     print(population_values)
-    # array1 = [1, 1, 0, 1]
-    # array2 = [1, 1, 1, 1]
-    # population = generate_population(7, 5, 5)
-    # print(roulette_wheel_selection(population, matrix_A,
-    #                                    vector_b, 1, 5))
 
