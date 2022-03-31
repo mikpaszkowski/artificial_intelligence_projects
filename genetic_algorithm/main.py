@@ -1,3 +1,5 @@
+import numpy
+
 import algorithm
 from population import generate_population
 from roulette_wheel_selection import roulette_wheel_selection
@@ -12,3 +14,4 @@ if __name__ == '__main__':
     # population = generate_population(7, 5, 5)
     # print(roulette_wheel_selection(population, matrix_A,
     #                                    vector_b, 1, 5))
+

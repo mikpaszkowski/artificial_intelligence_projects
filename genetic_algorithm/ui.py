@@ -11,7 +11,7 @@ def get_function_coeff():
             'type': 'input',
             'name': 'A',
             'message': "Please enter the values of {n}x{n} positivie-definite matrix \'A\' separated by \',\' (row), \';\' (column):",
-            'default': '1,1,1,1,1;1,1,1,1,1;1,1,1,1,1;1,1,1,1,1;1,1,1,1,1',
+            'default': '6,-2,1;2,2,2;1,-2,3',
             'validate': SymmetricMatrixValidator
         })
 
@@ -23,7 +23,7 @@ def get_function_coeff():
             'type': 'input',
             'name': 'b',
             'message': 'Please enter the values of n-length vector b, each separated by \';\' (i.e. 1;2;3;4;5):',
-            'default': '1;2;3;4;5',
+            'default': '1;2;3',
             'validate': VectorValidator
         })
         if numpy.matrix(answer_b['b']).size == matrix_A.shape[0]:
@@ -48,7 +48,7 @@ def get_main_parameters():
             'type': 'input',
             'name': 'dimension',
             'message': "Please enter the value of problem dimensionality:",
-            'default': "5",
+            'default': "3",
             'validate': IntegerValidator
         })
     answer_int_range = prompt(
@@ -74,7 +74,7 @@ def get_main_parameters():
             'type': 'input',
             'name': 'mut_prob',
             'message': "Please enter the value of mutation probability:",
-            'default': "0.75",
+            'default': "0.09",
             'validate': ProbabilityValidator
         }
     )
@@ -97,4 +97,6 @@ def get_main_parameters():
         }
     )
 
-    return int(answer_dim['dimension']), int(answer_int_range['integer_range']), int(answer_pop_size['pop_size']), float(answer_cross_prob['cross_prob']), float(answer_mut_prob['mut_prob']), int(answer_iter_num['iter_num'])
+    return int(answer_dim['dimension']), int(answer_int_range['integer_range']), int(
+        answer_pop_size['pop_size']), float(answer_cross_prob['cross_prob']), float(answer_mut_prob['mut_prob']), int(
+        answer_iter_num['iter_num'])
