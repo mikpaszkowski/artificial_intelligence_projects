@@ -58,7 +58,7 @@ def crossover(population, crossoverProbability):
     nextGen = []
     if len(population) % 2 != 0:
         randomParent = population.pop(numpy.random.randint(0, len(population) - 1))
-        print(randomParent)
+    #    print(randomParent)
         nextGen.append(numpy.array(randomParent).tolist())
     parentTuples = tuples(population)
     for pair in parentTuples:
@@ -70,5 +70,5 @@ def crossover(population, crossoverProbability):
             nextGen.append(pair[0])
             nextGen.append(pair[1])
 
-    print("nextGen: ", nextGen)
+   # print("\nnextGen: ", nextGen)
     return nextGen
