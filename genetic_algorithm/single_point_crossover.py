@@ -2,7 +2,6 @@ import numpy
 
 
 def chromosomeCrossover(p1, p2):
-
     ch1_bit = []
     ch2_bit = []
     p = []
@@ -25,10 +24,10 @@ def tuples(population):
     parents = []
     while size > 0:
         p1 = population[0]
-        population = numpy.delete(population, 0, axis=0)  
+        population = numpy.delete(population, 0, axis=0)
         p2_index = numpy.random.randint(0, size - 1)
         p2 = population[p2_index]
-        population = numpy.delete(population, p2_index, axis=0)  
+        population = numpy.delete(population, p2_index, axis=0)
         parents.append((p1, p2))
         size = size - 2
     return parents

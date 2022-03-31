@@ -5,12 +5,10 @@ def intToBin(n, numOfBits=0):
         if -minimum > maximum:
             maximum = -minimum
 
-        # print("maximum", maximum)
         numOfBits = 0
         while maximum > 2 ** numOfBits:
             numOfBits = numOfBits + 1
         numOfBits = numOfBits + 1
-        # print("numOfBits", numOfBits)
     ret = []
     j = 0
     for i in n:

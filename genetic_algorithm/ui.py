@@ -100,3 +100,12 @@ def get_main_parameters():
     return int(answer_dim['dimension']), int(answer_int_range['integer_range']), int(
         answer_pop_size['pop_size']), float(answer_cross_prob['cross_prob']), float(answer_mut_prob['mut_prob']), int(
         answer_iter_num['iter_num'])
+
+
+def welcome_message():
+    print("****************************************************************")
+    print("Genetic Algorithm for function minimalization ******************")
+    print("Designed for multidimensional quadratic function ***************")
+    print("*********************Copyright 01-04-2022***********************\n\n")
+
+
