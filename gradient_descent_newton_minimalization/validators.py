@@ -13,6 +13,7 @@ class NumberValidator(Validator):
                 cursor_position=len(document.text)
             )
 
+
 class ProbabilityValidator(Validator):
     def validate(self, document):
         ok = re.match('\\d+(\\.\\d+)*', str(document.text))
@@ -28,8 +29,6 @@ class ProbabilityValidator(Validator):
                 message='Probability value is not valid. It must be in range <0,1>',
                 cursor_position=len(document.text)
             )
-
-
 
 
 class IntegerValidator(Validator):

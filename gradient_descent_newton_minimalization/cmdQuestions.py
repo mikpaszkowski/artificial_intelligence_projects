@@ -7,7 +7,7 @@ from ScalarFunCoeff import ScalarFunCoeff
 from StopConditions import StopConditions
 from VectorFunCoeff import VectorFunCoeff
 from enums import MethodType, FunctionType, StartingPointType, StoppingConditionType
-from validators import NumberValidator, IntegerValidator
+from gradient_descent_newton_minimalization.validators import NumberValidator, IntegerValidator
 
 
 def getMethodAndFunctionType():
