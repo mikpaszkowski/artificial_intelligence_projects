@@ -5,7 +5,9 @@ from validators import SymmetricMatrixValidator, VectorValidator, NumberValidato
     PositiveIntegerValidator, ProbabilityValidator
 
 
-def get_function_coeff():
+def get_function_coeff_and_dim():
+    global answer_b, vector_b, dim
+
     answer_a = prompt(
         {
             'type': 'input',
@@ -31,6 +33,8 @@ def get_function_coeff():
         else:
             print('Length of vector b should be the same as size of matrix A n x n:')
 
+    vector_b = numpy.matrix(answer_b['b'])
+
     answer_c = prompt({
         'type': 'input',
         'name': 'c',
@@ -39,18 +43,28 @@ def get_function_coeff():
         'validate': NumberValidator
     })
 
-    return matrix_A, numpy.matrix(answer_b['b']), float(answer_c['c'])
+    dim_correct = False
+    while not dim_correct:
+        answer_dim = prompt(
+            {
+                'type': 'input',
+                'name': 'dimension',
+                'message': "Please enter the value of problem dimensionality:",
+                'default': "3",
+                'validate': IntegerValidator
+            })
+
+        dim = int(answer_dim['dimension'])
+
+        if vector_b.size == dim:
+            dim_correct = True
+        else:
+            print('Length of vector b should be the same as size of matrix A n x n:')
+
+    return matrix_A, vector_b, float(answer_c['c']), dim
 
 
 def get_main_parameters():
-    answer_dim = prompt(
-        {
-            'type': 'input',
-            'name': 'dimension',
-            'message': "Please enter the value of problem dimensionality:",
-            'default': "3",
-            'validate': IntegerValidator
-        })
     answer_int_range = prompt(
         {
             'type': 'input',
@@ -97,7 +111,7 @@ def get_main_parameters():
         }
     )
 
-    return int(answer_dim['dimension']), int(answer_int_range['integer_range']), int(
+    return int(answer_int_range['integer_range']), int(
         answer_pop_size['pop_size']), float(answer_cross_prob['cross_prob']), float(answer_mut_prob['mut_prob']), int(
         answer_iter_num['iter_num'])
 
@@ -107,5 +121,3 @@ def welcome_message():
     print("Genetic Algorithm for function minimalization ******************")
     print("Designed for multidimensional quadratic function ***************")
     print("*********************Copyright 01-04-2022***********************\n\n")
-
-
