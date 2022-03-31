@@ -10,13 +10,28 @@ def mutate_population(population, mut_prob):
 
 def mutate_chromosome_bitfield(chromosome_bitfield, mut_prob):
     for i in range(len(chromosome_bitfield)):
-        curr_bit = chromosome_bitfield[i]
-        if is_mutation_possible(mut_prob):
-            if curr_bit == 1:
-                chromosome_bitfield[i] = 0
-            else:
-                chromosome_bitfield[i] = 1
+        curr_num_bin = numpy.binary_repr(chromosome_bitfield[i])
+        mut = mutate_bin(curr_num_bin, mut_prob)
+        chromosome_bitfield[i] = convert_bitstring_to_int(mut)
     return chromosome_bitfield
+
+
+def convert_bitstring_to_int(bit_array):
+    return int(''.join(bit_array), 2)
+
+
+def mutate_bin(curr_num_to_bin, mut_prob):
+    mut = []
+    for bin_num in curr_num_to_bin:
+        if is_mutation_possible(mut_prob):
+            if bin_num == "1":
+                bin_num = "0"
+            elif bin_num == "0":
+                bin_num = "1"
+            elif bin_num == "-":
+                bin_num = " "
+        mut.append(bin_num)
+    return mut
 
 
 def is_mutation_possible(mut_prob):
