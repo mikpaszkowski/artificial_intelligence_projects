@@ -6,11 +6,14 @@ def fitness_fun(A, b, c, chromosome_bitfield):
     bx = numpy.dot(numpy.transpose(b), chromosome_bitfield)
     return x_TAx + bx + c
 
+
 def roulette_wheel_selection(population, A, b, c, pop_size):
     population_fitness = sum([fitness_fun(A, b, c, chromosome).item(0, 0) for chromosome in population])
-    chromosome_probabilities = [fitness_fun(A, b, c, chromosome).item(0, 0)/population_fitness for chromosome in population]
+    chromosome_probabilities = [fitness_fun(A, b, c, chromosome).item(0, 0) / population_fitness for chromosome in
+                                population]
 
-    chromosome_prob_tuples = [(chromosome_probabilities[i], population[i]) for i in range(len(chromosome_probabilities))]
+    chromosome_prob_tuples = [(chromosome_probabilities[i], population[i]) for i in
+                              range(len(chromosome_probabilities))]
 
     wheel = get_roulette_wheel(chromosome_prob_tuples)
 

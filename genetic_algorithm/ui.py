@@ -48,6 +48,7 @@ def get_main_parameters():
             'type': 'input',
             'name': 'dimension',
             'message': "Please enter the value of problem dimensionality:",
+            'default': "5",
             'validate': IntegerValidator
         })
     answer_int_range = prompt(
@@ -55,6 +56,7 @@ def get_main_parameters():
             'type': 'input',
             'name': 'integer_range',
             'message': "Please enter the range value of searched integers d >= 1:",
+            'default': "7",
             'validate': PositiveIntegerValidator
         }
     )
@@ -63,6 +65,7 @@ def get_main_parameters():
             'type': 'input',
             'name': 'cross_prob',
             'message': "Please enter the value of crossover probability:",
+            'default': "0.6",
             'validate': ProbabilityValidator
         })
 
@@ -71,6 +74,7 @@ def get_main_parameters():
             'type': 'input',
             'name': 'mut_prob',
             'message': "Please enter the value of mutation probability:",
+            'default': "0.75",
             'validate': ProbabilityValidator
         }
     )
@@ -79,6 +83,7 @@ def get_main_parameters():
             'type': 'input',
             'name': 'pop_size',
             'message': "Please enter the value of population size:",
+            'default': "5",
             'validate': IntegerValidator
         })
 
@@ -87,6 +92,7 @@ def get_main_parameters():
             'type': 'input',
             'name': 'iter_num',
             'message': 'Please enter the value of iterations:',
+            'default': "10",
             'validate': IntegerValidator
         }
     )
