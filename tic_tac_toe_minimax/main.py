@@ -1,6 +1,7 @@
 import copy
 import random
 import sys
+import time
 
 import numpy
 from numpy import Infinity
@@ -23,37 +24,42 @@ pygame.display.set_caption('TIC TAC TOE - MINIMAX ALGORITHM')
 class Board:
 
     def __init__(self):
-        self.board_squares = numpy.zeros((SIZE, SIZE))
+        self.board_squares = numpy.zeros((3,3))
         self.num_of_marked_squares = 0
 
-    def is_over(self):
+    def is_over(self, drawLines = True):
         for num in range(0, 3):
             if self.board_squares[num][0] == self.board_squares[num][1] == self.board_squares[num][2] and \
                     self.board_squares[num][0] != 0:
-                pygame.draw.line(window, RESULT_LINE_COLOR, (0, SIZE / 6 * (num * 2 + 1)),
+                if drawLines:
+                    pygame.draw.line(window, RESULT_LINE_COLOR, (0, SIZE / 6 * (num * 2 + 1)),
                                  (SIZE, SIZE / 6 * (num * 2 + 1)),
                                  LINE_WIDTH_XO)
                 return self.board_squares[num][0]
 
             if self.board_squares[0][num] == self.board_squares[1][num] == self.board_squares[2][num] and \
                     self.board_squares[0][num] != 0:
-                pygame.draw.line(window, RESULT_LINE_COLOR, (SIZE / 6 * (num * 2 + 1), 0),
+                if drawLines:
+                    pygame.draw.line(window, RESULT_LINE_COLOR, (SIZE / 6 * (num * 2 + 1), 0),
                                  (SIZE / 6 * (num * 2 + 1), SIZE),
                                  LINE_WIDTH_XO)
                 return self.board_squares[0][num]
 
             if self.board_squares[0][0] == self.board_squares[1][1] == self.board_squares[2][2] and \
                     self.board_squares[0][0] != 0:
-                pygame.draw.line(window, RESULT_LINE_COLOR, (0, 0), (SIZE, SIZE), LINE_WIDTH_XO)
+                if drawLines:
+                    pygame.draw.line(window, RESULT_LINE_COLOR, (0, 0), (SIZE, SIZE), LINE_WIDTH_XO)
                 return self.board_squares[1][1]
 
             if self.board_squares[0][2] == self.board_squares[1][1] == self.board_squares[2][0] and \
                     self.board_squares[0][2] != 0:
-                pygame.draw.line(window, RESULT_LINE_COLOR, (0, SIZE), (SIZE, 0), LINE_WIDTH_XO)
+                if drawLines:
+                    pygame.draw.line(window, RESULT_LINE_COLOR, (0, SIZE), (SIZE, 0), LINE_WIDTH_XO)
                 return self.board_squares[1][1]
         return 0
 
     def mark_square(self, row, column, player):
+
         self.board_squares[row][column] = player
         self.num_of_marked_squares += 1
 
@@ -80,44 +86,55 @@ class Algorithm:
 
     def random_move(self, board_squares):
         empty_board_squares = board_squares
+        print("len(empty_board_squares: ", len(empty_board_squares))
+        if len(empty_board_squares) == 0:
+            print("bbbbb")
+            return None
         return empty_board_squares[random.randrange(0, len(empty_board_squares))]
 
     def check_terminal_cases(self, board):
 
-        final_result = board.is_over()
+        final_result = board.is_over(False)
 
         if final_result == 1:
-            return 1, None
+            return -1, None
 
         if final_result == 2:
-            return -1, None
+            return 1, None
 
         if board.is_board_full():
             return 0, None
 
 
-    def minimax(self, board, maximizing_player):
-
+    def minimax(self, board, maximizing_player, alpha = -Infinity, beta = Infinity):
+        #print("i: ", i)
         result = self.check_terminal_cases(board)
 
         if result is not None:
-            return result
+            # print("it'll be a tie")
+            # a = [-1, -1]
+            return result#float(0), a
 
+        #temp_board = copy.deepcopy(board)
         if maximizing_player:
             max_eval = -Infinity
             move = None
             empty_squares = board.get_empty_board_squares()
 
             for (row, column) in empty_squares:
-                temp_board = copy.deepcopy(board)
-                print("mark square: ", row, column)
-                temp_board.mark_square(row, column, self.player)
-                print("after: ", temp_board.get_empty_board_squares())
-                evaluation = self.minimax(temp_board, False)[0]
+                # print("\nbefore: ", temp_board.get_empty_board_squares())
+                # print("mark square: ", row, column)
+                board.mark_square(row, column, self.player)
+                # print("after: ", temp_board.get_empty_board_squares())
+                evaluation = self.minimax(board, False, alpha, beta)[0]
+                board.mark_square(row, column, 0)
 
                 if evaluation > max_eval:
                     max_eval = evaluation
                     move = (row, column)
+                alpha = max (alpha,max_eval)
+                if beta <= alpha:
+                    break
             return max_eval, move
 
         elif not maximizing_player:
@@ -126,15 +143,19 @@ class Algorithm:
             empty_squares = board.get_empty_board_squares()
 
             for (row, column) in empty_squares:
-                temp_board = copy.deepcopy(board)
-                print("mark square: ", row, column)
-                temp_board.mark_square(row, column, self.player)
-                print("after: ", temp_board.get_empty_board_squares())
-                evaluation = self.minimax(temp_board, True)[0]
+                # print("\nbefore: ", temp_board.get_empty_board_squares())
+                # print("mark square: ", row, column)
+                board.mark_square(row, column, self.player)
+                # print("after: ", temp_board.get_empty_board_squares())
+                evaluation = self.minimax(board, True, alpha, beta)[0]
+                board.mark_square(row, column, 0)
 
                 if evaluation < min_eval:
                     min_eval = evaluation
                     move = (row, column)
+                beta = min( beta, min_eval)
+                if beta <= alpha:
+                    break
                 # print("min_eval, move: ", min_eval, move)
             return min_eval, move
 
@@ -144,7 +165,11 @@ class Algorithm:
             move = self.random_move(board.get_empty_board_squares())
         else:
             eval, move = self.minimax(board, False)
-
+        print("move: ", move)
+        if move == None:
+            print ("aaaa")
+            move = self.random_move(board.get_empty_board_squares());
+            print("new move: ", move)
         return move
 
 
@@ -236,10 +261,20 @@ def main():
                 if game.is_running and game.player == algorithm.player:
                     pygame.display.update()
                     # print("ai before: ", board.get_empty_board_squares())
-                    a, b = algorithm.evaluate_move(board)
-                    game.move(a, b)
-                    if game.is_game_finished():
-                        game.is_running = False
+                    start = time.time()
+                    ret = algorithm.evaluate_move(board)
+                    end = time.time()
+                    print("computed in: ", end-start)
+                    if ret != None:
+                        a,b = ret
+                        end  = time.time()
+                        game.move(a, b)
+                        if game.is_game_finished():
+                            game.is_running = False
+                    else:
+                        print("no more squares")
+
+                    
 
                 pygame.display.update()
 
