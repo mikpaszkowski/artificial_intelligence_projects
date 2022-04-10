@@ -1,8 +1,9 @@
+import copy
 import random
 import sys
-import time
 
 import numpy
+from numpy import Infinity
 import pygame
 from pygame import MOUSEBUTTONDOWN
 
@@ -32,26 +33,25 @@ class Board:
                 pygame.draw.line(window, RESULT_LINE_COLOR, (0, SIZE / 6 * (num * 2 + 1)),
                                  (SIZE, SIZE / 6 * (num * 2 + 1)),
                                  LINE_WIDTH_XO)
-                return True
+                return self.board_squares[num][0]
 
             if self.board_squares[0][num] == self.board_squares[1][num] == self.board_squares[2][num] and \
                     self.board_squares[0][num] != 0:
                 pygame.draw.line(window, RESULT_LINE_COLOR, (SIZE / 6 * (num * 2 + 1), 0),
                                  (SIZE / 6 * (num * 2 + 1), SIZE),
                                  LINE_WIDTH_XO)
-                return True
+                return self.board_squares[0][num]
 
             if self.board_squares[0][0] == self.board_squares[1][1] == self.board_squares[2][2] and \
                     self.board_squares[0][0] != 0:
                 pygame.draw.line(window, RESULT_LINE_COLOR, (0, 0), (SIZE, SIZE), LINE_WIDTH_XO)
-                return True
+                return self.board_squares[1][1]
 
             if self.board_squares[0][2] == self.board_squares[1][1] == self.board_squares[2][0] and \
                     self.board_squares[0][2] != 0:
                 pygame.draw.line(window, RESULT_LINE_COLOR, (0, SIZE), (SIZE, 0), LINE_WIDTH_XO)
-                return True
-        print("False")
-        return False
+                return self.board_squares[1][1]
+        return 0
 
     def mark_square(self, row, column, player):
         self.board_squares[row][column] = player
@@ -74,24 +74,77 @@ class Board:
 
 class Algorithm:
 
-    def __init__(self, level=0, player=2):
-        self.level = level
+    def __init__(self, depth=1, player=2):
+        self.depth = depth
         self.player = player
 
     def random_move(self, board_squares):
         empty_board_squares = board_squares
-        # print(empty_board_squares)
-        rand = empty_board_squares[random.randrange(0, len(empty_board_squares))]
-        print("rand: ", rand)
-        return rand
+        return empty_board_squares[random.randrange(0, len(empty_board_squares))]
 
-    def evaluate_move(self, board_squares):
+    def check_terminal_cases(self, board):
 
-        if self.level == 0:
-            move = self.random_move(board_squares)
+        final_result = board.is_over()
+
+        if final_result == 1:
+            return 1, None
+
+        if final_result == 2:
+            return -1, None
+
+        if board.is_board_full():
+            return 0, None
+
+
+    def minimax(self, board, maximizing_player):
+
+        result = self.check_terminal_cases(board)
+
+        if result is not None:
+            return result
+
+        if maximizing_player:
+            max_eval = -Infinity
+            move = None
+            empty_squares = board.get_empty_board_squares()
+
+            for (row, column) in empty_squares:
+                temp_board = copy.deepcopy(board)
+                print("mark square: ", row, column)
+                temp_board.mark_square(row, column, self.player)
+                print("after: ", temp_board.get_empty_board_squares())
+                evaluation = self.minimax(temp_board, False)[0]
+
+                if evaluation > max_eval:
+                    max_eval = evaluation
+                    move = (row, column)
+            return max_eval, move
+
+        elif not maximizing_player:
+            min_eval = +Infinity
+            move = None
+            empty_squares = board.get_empty_board_squares()
+
+            for (row, column) in empty_squares:
+                temp_board = copy.deepcopy(board)
+                print("mark square: ", row, column)
+                temp_board.mark_square(row, column, self.player)
+                print("after: ", temp_board.get_empty_board_squares())
+                evaluation = self.minimax(temp_board, True)[0]
+
+                if evaluation < min_eval:
+                    min_eval = evaluation
+                    move = (row, column)
+                # print("min_eval, move: ", min_eval, move)
+            return min_eval, move
+
+    def evaluate_move(self, board):
+
+        if self.depth == 0:
+            move = self.random_move(board.get_empty_board_squares())
         else:
+            eval, move = self.minimax(board, False)
 
-            pass
         return move
 
 
@@ -104,7 +157,6 @@ class Game:
         self.is_running = True
 
     def show_game_window(self):
-        pygame.display.update()
 
         window.fill(BACKGROUND_COLOR)
 
@@ -113,6 +165,8 @@ class Game:
 
         pygame.draw.line(window, LINE_COLOR, (0, SIZE / 3), (SIZE, SIZE / 3), LINE_WIDTH_BOARD)
         pygame.draw.line(window, LINE_COLOR, (0, SIZE / 3 * 2), (SIZE, SIZE / 3 * 2), LINE_WIDTH_BOARD)
+
+        pygame.display.update()
 
     def draw(self, row, column):
 
@@ -148,8 +202,8 @@ class Game:
     def next_player(self):
         self.player = self.player % 2 + 1
 
-    def is_game_finshed(self):
-        return self.board.is_over() or self.board.is_board_full()
+    def is_game_finished(self):
+        return self.board.is_over() != 0 or self.board.is_board_full()
 
 
 def main():
@@ -175,20 +229,19 @@ def main():
                 if board.is_empty(row, column) and game.is_running:
                     game.move(row, column)
 
-                    if game.is_game_finshed():
-                        print("here")
+                    if game.is_game_finished():
+                        # print("here")
                         game.is_running = False
 
                 if game.is_running and game.player == algorithm.player:
                     pygame.display.update()
-                    print("ai before: ", board.get_empty_board_squares())
-                    a, b = algorithm.evaluate_move(board.get_empty_board_squares())
+                    # print("ai before: ", board.get_empty_board_squares())
+                    a, b = algorithm.evaluate_move(board)
                     game.move(a, b)
-                    if game.is_game_finshed():
-
+                    if game.is_game_finished():
                         game.is_running = False
 
-        pygame.display.update()
+                pygame.display.update()
 
 
 main()
