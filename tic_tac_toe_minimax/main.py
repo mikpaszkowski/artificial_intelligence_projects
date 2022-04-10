@@ -1,25 +1,13 @@
-#import random
 import sys
-import time
 
-#import numpy
-# from numpy import Infinity
 import pygame
 from pygame import MOUSEBUTTONDOWN
 
 from constants import *
-#from board import Board
-#from algorithm import Algorithm
 from game import Game
 
 winner = None
 draw = None
-
-
-
-
-
-
 
 
 def main():
@@ -50,13 +38,10 @@ def main():
 
                 if game.is_running and game.player == algorithm.player:
                     pygame.display.update()
-                    start = time.time()
                     ret = algorithm.evaluate_move(board)
-                    end = time.time()
-                    print("computed in: ", end-start)
+
                     if ret != None:
-                        a,b = ret
-                        end  = time.time()
+                        a, b = ret
                         game.move(a, b)
                         if game.is_game_finished():
                             game.is_running = False
@@ -64,8 +49,6 @@ def main():
                         print("no more squares")
 
                         game.is_running = False
-
-                    
 
                 pygame.display.update()
 

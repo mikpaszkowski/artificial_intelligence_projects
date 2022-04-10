@@ -1,21 +1,13 @@
-# import random
-# import sys
-# import time
-
-# import numpy
-from numpy import Infinity
 import pygame
-from pygame import MOUSEBUTTONDOWN
 
-from constants import *
-from board import Board
 from algorithm import Algorithm
-
-
+from board import Board
+from constants import *
 
 pygame.init()
 window = pygame.display.set_mode((SIZE, SIZE))
 pygame.display.set_caption('TIC TAC TOE - MINIMAX ALGORITHM')
+
 
 class Game:
 
