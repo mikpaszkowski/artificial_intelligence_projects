@@ -39,17 +39,17 @@ class Board:
                                  LINE_WIDTH_XO)
                 return self.board_squares[0][num]
 
-            if self.board_squares[0][0] == self.board_squares[1][1] == self.board_squares[2][2] and \
-                    self.board_squares[0][0] != 0:
-                if drawLines:
-                    pygame.draw.line(window, RESULT_LINE_COLOR, (0, 0), (SIZE, SIZE), LINE_WIDTH_XO)
-                return self.board_squares[1][1]
+        if self.board_squares[0][0] == self.board_squares[1][1] == self.board_squares[2][2] and \
+                self.board_squares[0][0] != 0:
+            if drawLines:
+                pygame.draw.line(window, RESULT_LINE_COLOR, (0, 0), (SIZE, SIZE), LINE_WIDTH_XO)
+            return self.board_squares[1][1]
 
-            if self.board_squares[0][2] == self.board_squares[1][1] == self.board_squares[2][0] and \
-                    self.board_squares[0][2] != 0:
-                if drawLines:
-                    pygame.draw.line(window, RESULT_LINE_COLOR, (0, SIZE), (SIZE, 0), LINE_WIDTH_XO)
-                return self.board_squares[1][1]
+        if self.board_squares[0][2] == self.board_squares[1][1] == self.board_squares[2][0] and \
+                self.board_squares[0][2] != 0:
+            if drawLines:
+                pygame.draw.line(window, RESULT_LINE_COLOR, (0, SIZE), (SIZE, 0), LINE_WIDTH_XO)
+            return self.board_squares[1][1]
         return 0
 
     def mark_square(self, row, column, player):

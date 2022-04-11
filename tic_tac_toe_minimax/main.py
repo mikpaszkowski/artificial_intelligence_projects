@@ -51,7 +51,7 @@ def main():
                 if game.is_running and game.player == algorithm.player:
                     pygame.display.update()
                     start = time.time()
-                    ret = algorithm.evaluate_move(board)
+                    ret = algorithm.evaluate_move(board, len(board.get_empty_board_squares()))
                     end = time.time()
                     print("computed in: ", end-start)
                     if ret != None:
