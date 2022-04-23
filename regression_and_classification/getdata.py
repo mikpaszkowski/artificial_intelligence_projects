@@ -7,6 +7,8 @@ def getdata(csvname):
     print("data: ", data)
     fields = len(data[1])
     length = len(data)
+    for x in data:
+        x[1] = x[1][:-7]
     train = [[0 for x in range(fields)] for y in range(int(length*0.8)+1)]
     test = [[0 for x in range(fields)] for y in range(int(length*0.2))]
 
@@ -18,3 +20,4 @@ def getdata(csvname):
     print ("train: ", train)
     print ("test: ", test)
     return train, test
+
