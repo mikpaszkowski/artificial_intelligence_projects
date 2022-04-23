@@ -2,10 +2,10 @@ import pandas as pd
 import numpy as np
 
 
-def getdata(csvname, fields):
+def getdata(csvname):
     data = pd.read_csv(csvname).to_numpy()
-    # print("data: ", data)
-
+    print("data: ", data)
+    fields = len(data[1])
     length = len(data)
     train = [[0 for x in range(fields)] for y in range(int(length*0.8)+1)]
     test = [[0 for x in range(fields)] for y in range(int(length*0.2))]
@@ -15,6 +15,6 @@ def getdata(csvname, fields):
             train[i] = data[i]
         else:
             test[int(i-(length*0.8))][:] = data[i][:]
-    # print ("train: ", train)
-    # print ("test: ", test)
+    print ("train: ", train)
+    print ("test: ", test)
     return train, test
