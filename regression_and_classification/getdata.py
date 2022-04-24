@@ -15,14 +15,10 @@ def preprocessing(df):
     df_cp["day"] = df_cp["date"].dt.day
 
     df_cp = df_cp.drop("date", axis = 1)
-    # df_cp.info()
+    
     toDelete = np.floor(len(df_cp)*0.02)
-    # print("to delete: ", int(toDelete))
-    # sns.distplot(df_cp["price"])
-    # plt.show()
+
     df_cp = df_cp.sort_values(["price"], ascending=False).iloc[int(toDelete):]
-    # sns.distplot(df_cp["price"])
-    # plt.show()
     
     df_cp = df_cp.drop("sqft_above", axis = 1)
     df_cp = df_cp.drop("sqft_living15", axis = 1)
