@@ -13,4 +13,4 @@ def svm(x_train, y_train, x_test, y_test):
     print(search_grid.best_params_)
     print(search_grid.best_estimator_)
     search_grid_predictions = search_grid.predict(x_test)
-    metrics("SVC", y_test, predictions)
+    metrics("SVC", y_test, search_grid_predictions)

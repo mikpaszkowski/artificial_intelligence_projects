@@ -1,11 +1,14 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 
 def getdata(csvname):
     data = pd.read_csv(csvname)
-    # print("data: ", data)
+    # data.hist()
+    # plt.show()
+    # print("data: "price"], , data)
     # fields = len(data.loc[1])
     # length = len(data)
     # for x in data:
@@ -23,7 +26,7 @@ def getdata(csvname):
     # print ("test: ", test)
 
     # bins = (0, 500000, 99999999999)
-    # group_names = ['cheap', 'ekspensive']
+    # group_names = ['cheap', 'expensive']
     # data['price'] = pd.cut(data['price'], bins = bins, labels = group_names)
 
     # labels = LabelEncoder()
