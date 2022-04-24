@@ -1,13 +1,13 @@
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 from metrics import metrics
+from sklearn.model_selection import GridSearchCV
+
 def random_forest(X_train, Y_train, X_test, Y_test):
-    # print("random forest a")
-    random_forest = RandomForestClassifier()
-    # print("random forest b")
-    random_forest.fit(X_train, Y_train)
-    accuracy = random_forest.score(X_test, Y_test)
-    "Accuracy: {}%".format(int(round(accuracy * 100)))
-    print("random forest c")
-    pred_random_forest = random_forest.predict(X_test)
-    # print("random forest d")
+
+    param_grid = {'min_samples_split' : [3,4,6,10], 'n_estimators' : [70,100], 'random_state': [5] }
+    grid_rf = GridSearchCV(RandomForestRegressor(), param_grid, cv = 5, refit=True, verbose = 0, scoring = 'r2')
+    grid_rf.fit(X_train, Y_train)
+
+    pred_random_forest = grid_rf.best_estimator_.predict(X_test)
+
     metrics("random forest", Y_test, pred_random_forest)
