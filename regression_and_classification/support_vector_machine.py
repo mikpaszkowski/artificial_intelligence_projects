@@ -1,5 +1,6 @@
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
+from metrics import metrics
 
 def svm(x_train, y_train, x_test, y_test):
     print("****************** Support Vector Machine ******************")
@@ -12,3 +13,4 @@ def svm(x_train, y_train, x_test, y_test):
     print(search_grid.best_params_)
     print(search_grid.best_estimator_)
     search_grid_predictions = search_grid.predict(x_test)
+    metrics("SVC", y_test, predictions)
