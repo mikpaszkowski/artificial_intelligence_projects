@@ -3,47 +3,47 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
+import seaborn as sns
+
+def preprocessing(df):
+    df_cp = df.copy()
+    df_cp.drop("id", axis = 1)
+    df_cp['date'] = df_cp['date'].str.replace("T000000","")
+    df_cp['date'] = pd.to_datetime(df_cp['date'])
+    df_cp['year'] = df_cp["date"].dt.year
+    df_cp['month'] = df_cp["date"].dt.month
+    df_cp["day"] = df_cp["date"].dt.day
+
+    df_cp = df_cp.drop("date", axis = 1)
+   # df_cp.info()
+    toDelete = np.floor(len(df_cp)*0.02)
+    print("to delete: ", int(toDelete))
+    sns.distplot(df_cp["price"])
+    plt.show()
+    df_cp = df_cp.sort_values(["price"], ascending=False).iloc[int(toDelete):]
+    sns.distplot(df_cp["price"])
+    plt.show()
+    x = df.iloc[:, 1:]
+    y = df.iloc[:, 0:1]
+    X = x.values
+    Y = y.values
+
+    return df_cp
 
 def getdata(csvname):
     data = pd.read_csv(csvname)
-    # data.hist()
-    # plt.show()
-    # print("data: "price"], , data)
-    # fields = len(data.loc[1])
-    # length = len(data)
-    # for x in data:
-    #     x = x[:-7]
-    data['date'] = data['date'].str.replace("T000000","")
-    # train = [[0 for x in range(fields)] for y in range(int(length*0.8)+1)]
-    # test = [[0 for x in range(fields)] for y in range(int(length*0.2))]
+    data = preprocessing(data)
+    #data['date'] = data['date'].str.replace("T000000","")
 
-    # for i in range(length):
-    #     if i < length * 0.8:
-    #         train[i] = data[i]
-    #     else:
-    #         test[int(i-(length*0.8))][:] = data[i][:]
-    # print ("train: ", train)
-    # print ("test: ", test)
-
-    # bins = (0, 500000, 99999999999)
-    # group_names = ['cheap', 'expensive']
-    # data['price'] = pd.cut(data['price'], bins = bins, labels = group_names)
-
-    # labels = LabelEncoder()
-    # data['price'] = labels.fit_transform(data['price'])
-    # data['price'].value_counts()
-
-
-    # print(data.to_string())
     X = data.drop('price', axis = 1)
     y = data['price']
 
 
     X_train, X_test, Y_train, Y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
-    sc = StandardScaler()
-    X_train = sc.fit_transform(X_train)
-   # Y_train = sc.fit_transform(Y_train).reshape(-1,1)
-    print("size X_train: ", np.size(X_train))
-    print("size Y_train: ", np.size(Y_train))
+#     sc = StandardScaler()
+#     X_train = sc.fit_transform(X_train)
+#     Y_train = sc.fit_transform(Y_train).reshape(-1,1)
+#     print("size X_train: ", np.size(X_train))
+#     print("size Y_train: ", np.size(Y_train))
     return X_train, Y_train, X_test, Y_test
 
