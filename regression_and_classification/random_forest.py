@@ -10,4 +10,4 @@ def random_forest(X_train, Y_train, X_test, Y_test):
 
     pred_random_forest = grid_rf.best_estimator_.predict(X_test)
 
-    metrics("random forest", Y_test, pred_random_forest)
+    return metrics("Random forest", Y_test, pred_random_forest)
