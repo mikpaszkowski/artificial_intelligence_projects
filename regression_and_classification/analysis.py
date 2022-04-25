@@ -16,10 +16,8 @@ def analysis(csvname):
     df.info()
     print(df.isnull().sum())
 
-    cor = df.corr()
     plt.figure(figsize=(20, 15))
-    columns = ['price', 'bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'waterfront', 'view', 'sqft_basement',
-               'zipcode', 'lat', 'long', 'month', 'floors', 'grade', 'yr_built', 'condition']
+
     columns2 = ['price', 'bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'sqft_basement', 'view',
                 'zipcode', 'lat', 'long', 'floors', 'yr_built', 'grade']
     sns.heatmap(df[columns2].corr(), annot=True, cmap=plt.cm.Reds)
