@@ -11,7 +11,6 @@ if __name__ == '__main__':
 
     # dataset['Species'] = dataset[['Species']].replace(['Iris-setosa','Iris-versicolor','Iris-virginica'],[0,1,2])
 
-
     # one_hot = OneHotEncoder()
     # transformed_data = one_hot.fit_transform(dataset['Species'].values.reshape(-1, 1)).toarray()
     #
@@ -43,20 +42,20 @@ if __name__ == '__main__':
                             max_iter=3000, activation='relu',
                             solver='sgd')
 
-    standard_scaler = StandardScaler()
-    scaler = standard_scaler.fit(X_train)
-    trainX_scaled = scaler.transform(X_train)
-    testX_scaled = scaler.transform(x_test)
+    # standard_scaler = StandardScaler()
+    # scaler = standard_scaler.fit(X_train)
+    # trainX_scaled = scaler.transform(X_train)
+    # testX_scaled = scaler.transform(x_test)
 
-    mlp_clf.fit(trainX_scaled, Y_train)
+    mlp_clf.fit(X_train, Y_train)
 
     print(mlp_clf.score(x_test, y_test))
 
-    y_pred = mlp_clf.predict(testX_scaled)
+    y_pred = mlp_clf.predict(x_test)
 
     print('Accuracy: {:.2f}'.format(accuracy_score(y_test, y_pred)))
 
-    fig = plot_confusion_matrix(mlp_clf, testX_scaled, y_test, display_labels=mlp_clf.classes_)
+    fig = plot_confusion_matrix(mlp_clf, x_test, y_test, display_labels=mlp_clf.classes_)
     fig.figure_.suptitle("Confusion Matrix")
     plot.show()
 
@@ -78,11 +77,11 @@ if __name__ == '__main__':
     }
 
     grid = GridSearchCV(mlp_clf, param_grid, n_jobs=-1, cv=5)
-    grid.fit(trainX_scaled, Y_train)
+    grid.fit(X_train, Y_train)
 
     print(grid.best_params_)
 
-    grid_predictions = grid.predict(testX_scaled)
+    grid_predictions = grid.predict(x_test)
 
     print('Accuracy: {:.2f}'.format(accuracy_score(y_test, grid_predictions)))
 
