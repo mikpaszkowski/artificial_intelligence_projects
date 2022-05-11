@@ -5,6 +5,7 @@ from sklearn.metrics import accuracy_score, plot_confusion_matrix, classificatio
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler, StandardScaler
+import n_layer_perceptron_classification.compare as compare
 
 if __name__ == '__main__':
     dataset = pd.read_csv("Iris.csv")
@@ -52,12 +53,13 @@ if __name__ == '__main__':
     print(mlp_clf.score(x_test, y_test))
 
     y_pred = mlp_clf.predict(x_test)
+    accuracy_score(y_test, y_pred)
 
     print('Accuracy: {:.2f}'.format(accuracy_score(y_test, y_pred)))
 
     fig = plot_confusion_matrix(mlp_clf, x_test, y_test, display_labels=mlp_clf.classes_)
     fig.figure_.suptitle("Confusion Matrix")
-    plot.show()
+    # plot.show()
 
     print(classification_report(y_test, y_pred))
 
@@ -69,7 +71,7 @@ if __name__ == '__main__':
 
     param_grid = {
         'hidden_layer_sizes': [(150, 100, 50), (120, 80, 40), (100, 50, 30)],
-        'max_iter': [50, 100, 150],
+        'max_iter': [500, 1000, 1500],
         'activation': ['tanh', 'relu'],
         'solver': ['sgd', 'adam'],
         'alpha': [0.0001, 0.05],
@@ -84,5 +86,7 @@ if __name__ == '__main__':
     grid_predictions = grid.predict(x_test)
 
     print('Accuracy: {:.2f}'.format(accuracy_score(y_test, grid_predictions)))
+
+    compare.compare(dataset)
 
 
