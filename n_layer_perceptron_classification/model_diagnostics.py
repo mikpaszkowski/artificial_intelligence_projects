@@ -1,15 +1,16 @@
 import numpy as np
-from sklearn.model_selection import validation_curve, ShuffleSplit, learning_curve
+from sklearn.metrics import plot_confusion_matrix
+from sklearn.model_selection import ShuffleSplit, validation_curve, learning_curve
 
 import matplotlib.pyplot as plot
 
 
-def validation_curve(multilayer_perceptron, data_feature, data_labels):
+def check_validation_curve(multilayer_perceptron, data_feature, data_labels):
     # learning curve
     # Calculate accuracy on training and validation set using range of parameter values
     train_scores, valid_scores = validation_curve(multilayer_perceptron, data_feature, data_labels,
-                                                  param_name='hidden_layer_sizes',
-                                                  param_range=np.arange(1, 12), cv=3, scoring="accuracy")
+                                                  param_name='hidden_layer_sizes', param_range=np.arange(1, 12), cv=3,
+                                                  scoring="accuracy")
 
     # Create range of values for parameter "Number of hidden nodes"
     param_range = np.arange(1, 12)
@@ -44,7 +45,7 @@ def validation_curve(multilayer_perceptron, data_feature, data_labels):
     print('train_scores:\n', train_scores, '\n valid_scores:\n', valid_scores)
 
 
-def learning_curve(multilayer_perceptron, data_feature, data_labels):
+def check_learning_curve(multilayer_perceptron, data_feature, data_labels):
     # Cross validation with 100 iterations to get smoother mean test and train
     # score curves, each time with 20% data randomly selected as a validation set.
     cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=0)
@@ -80,4 +81,11 @@ def learning_curve(multilayer_perceptron, data_feature, data_labels):
     plot.ylabel("Score")
     plot.tight_layout()
     plot.legend()
+    plot.show()
+
+
+def show_confusion_matrix(multilayer_perceptron, data_feature, data_labels):
+    fig = plot_confusion_matrix(multilayer_perceptron, data_feature, data_labels,
+                                display_labels=["Iris-Setosa", "Iris-Versicolor", "Iris-Virginica"])
+    fig.figure_.suptitle("Confusion Matrix")
     plot.show()

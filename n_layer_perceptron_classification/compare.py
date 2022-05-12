@@ -1,11 +1,10 @@
 import timeit
-
+import matplotlib.pyplot as plot
 import numpy as np
-from sklearn.metrics import accuracy_score, log_loss
+from sklearn.metrics import accuracy_score, log_loss, plot_confusion_matrix
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.neural_network import MLPClassifier
-from model_diagnostics import validation_curve, learning_curve
-
+from model_diagnostics import check_validation_curve, check_learning_curve, show_confusion_matrix
 
 cross_entropy_loss = []
 
@@ -27,8 +26,9 @@ def comparison(dataset, hidden_layers):
                                 max_iter=3000, activation='relu',
                                 solver='sgd')
 
-        validation_curve(mlp_clf, ir_features, ir_label)
-        learning_curve(mlp_clf, ir_features, ir_label)
+        # check_validation_curve(mlp_clf, ir_features, ir_label)
+        # check_learning_curve(mlp_clf, ir_features, ir_label)
+        # show_confusion_matrix(mlp_clf, ir_features, ir_label)
 
         mlp_clf.fit(X_train, Y_train)
         time = timeit.default_timer() - start
