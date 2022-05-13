@@ -42,7 +42,7 @@ def comparison(dataset, hidden_layers):
     # print(dataset.head(n=10))
 
     ir_features = dataset.drop(columns='Species').drop(columns='Species_0').drop(columns='Species_1').drop(
-        columns='Species_2')
+        columns='Species_2').drop(columns='Id')
     ir_label = dataset.drop(columns='Id').drop(columns='SepalLengthCm').drop(columns='SepalWidthCm').drop(
         columns='PetalLengthCm').drop(columns='PetalWidthCm').drop(columns='Species')
     # print(ir_label.head(n=10))
@@ -69,7 +69,7 @@ def comparison(dataset, hidden_layers):
     for layers in hidden_layers:
         start = timeit.default_timer()
         mlp_clf = MLPClassifier(hidden_layer_sizes=layers,
-                                max_iter=3000, activation='relu',
+                                max_iter=6000, activation='relu',
                                 solver='sgd')
 
         # check_validation_curve(mlp_clf, ir_features, ir_label)
@@ -77,10 +77,10 @@ def comparison(dataset, hidden_layers):
 
         mlp_clf.fit(X_train, Y_train)
 
+        time = timeit.default_timer() - start
+
         #to be fixed
         # show_confusion_matrix(mlp_clf, ir_features, dataset['Species'])
-
-        time = timeit.default_timer() - start
 
         y_pred = mlp_clf.predict(x_test)
         accuracy = accuracy_score(y_test, y_pred)
@@ -149,7 +149,7 @@ def compare(dataset):
     #     (50, 50, 50, 50, 50, 50, 50, 50, 50),
     #     (50, 50, 50, 50, 50, 50, 50, 50, 50, 50)
     # ]
-    #
+    
     # comparison(dataset, hidden_layers)
     #
     # hidden_layers = [
