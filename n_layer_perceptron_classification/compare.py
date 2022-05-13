@@ -33,17 +33,17 @@ def calculate_mse_mae(y_test, pred):
 def comparison(dataset, hidden_layers):
     dataset = dataset.drop(columns="Id")
     # Label encoding
-    le = LabelEncoder()
-    le.fit(dataset['Species'])
-    dataset['Species'] = le.transform(dataset['Species'])
+    # le = LabelEncoder()
+    # le.fit(dataset['Species'])
+    # dataset['Species'] = le.transform(dataset['Species'])
 
     # Transfirming Species to a three dimensional vector
     dummies = pd.get_dummies(dataset['Species'], prefix="Species")
     dataset = pd.concat([dataset, dummies], axis=1)
     # print(dataset.head(n=10))
 
-    ir_features = dataset.drop(columns='Species').drop(columns='Species_0').drop(columns='Species_1').drop(
-        columns='Species_2')
+    ir_features = dataset.drop(columns='Species').drop(columns='Species_Iris-setosa').drop(columns='Species_Iris-versicolor').drop(
+        columns='Species_Iris-virginica')
     ir_label = dataset.drop(columns='SepalLengthCm').drop(columns='SepalWidthCm').drop(
         columns='PetalLengthCm').drop(columns='PetalWidthCm').drop(columns='Species')
     # print(ir_label.head(n=10))
