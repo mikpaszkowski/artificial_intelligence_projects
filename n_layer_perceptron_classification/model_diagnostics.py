@@ -68,7 +68,6 @@ def check_learning_curve(multilayer_perceptron, data_feature, data_labels):
     plot.fill_between(train_sizes, validation_scores_mean - validation_scores_std,
                       validation_scores_mean + validation_scores_std, alpha=0.1, color="b")
 
-    # Plot mean accuracy scores for training and test sets score lines at each training set size
 
     # Easy to fit a model with a small number of data points (1 to 40)
     plot.plot(train_sizes, train_scores_mean, 'o-', color="lightgreen", label="Training score")
